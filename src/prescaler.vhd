@@ -1,7 +1,6 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
-use ieee.std_logic_unsigned.all;
 
 entity prescaler is
 	port( clk_input : in std_logic;
