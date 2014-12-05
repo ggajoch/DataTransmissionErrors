@@ -18,12 +18,9 @@ architecture RTL of debouncer is
 	signal ticks_left : integer range 0 to TicksBetweenEdges := 0;
 begin
 	process(clock) is
-		variable last_inputs : std_logic_vector(1 downto 0) := "00";
 		variable state : state_t := Idle;
 	begin
 		if( rising_edge(clock) ) then
-			last_inputs(0) := last_inputs(1);
-			last_inputs(1) := input;
 			
 			if( state = Waiting ) then
 				if( ticks_left > 0 ) then
