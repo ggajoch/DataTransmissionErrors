@@ -52,7 +52,7 @@ begin
 			"0001111" when 't',
 			"0011100" when 'u',
 			--"0000000" when 'w',
-			--"0000000" when 'x',
+			"0110111" when 'x',
 			"0111011" when 'y',
 			"1101101" when 'z',
 			"0000000" when others;
