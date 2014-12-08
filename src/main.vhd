@@ -24,7 +24,6 @@ signal clock_10Hz : std_logic;
 signal clock_1Hz : std_logic;
 signal actual_string : string(8 downto 1) := "12345678";
 signal actual_dots : std_logic_vector(8 downto 1) := "00000000";
-signal changing_nr : integer range 0 to 7 := 0;
 
 signal buttonMiddleDebounced : std_logic;
 signal buttonLeftDebounced : std_logic;
