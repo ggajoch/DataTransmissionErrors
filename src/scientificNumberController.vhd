@@ -25,7 +25,6 @@ architecture RTL of scientificNumberController is
 	signal buf_integer_exponent : integer range 0 to 9 := 1;
 	constant Zeros : std_logic_vector(nr_of_significant_digits+1 downto 1) := (others => '0');
 	signal changing_nr : integer range 1 to nr_of_significant_digits+3 := 3;
-	signal last_digit : std_logic;
 begin
 	
 	dot_process : process(changing_nr, dot_clock) is
