@@ -36,11 +36,17 @@ signal clock_prescaled : std_logic;
 signal uart_data : std_logic_vector(7 downto 0) := "00000000";
 signal uart_TC : std_logic := '0';
 
-signal speed_string : string(8 downto 1) := "12345678";
-signal speed_dots : std_logic_vector(8 downto 1) := "00000000";
+signal speed_string : string(8 downto 1);
+signal speed_dots : std_logic_vector(8 downto 1);
+signal speed_enable : std_logic := '0';
 
-signal actual_string : string(8 downto 1) := "12345678";
-signal actual_dots : std_logic_vector(8 downto 1) := "00000000";
+signal prot_string : string(8 downto 1);
+signal prot_dots : std_logic_vector(8 downto 1);
+signal prot_enable : std_logic := '0';
+signal prot_selected_mode : integer range 0 to 1;
+
+signal actual_string : string(8 downto 1);
+signal actual_dots : std_logic_vector(8 downto 1);
 
 type displayStates is (Speed, Protocol, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, Welcome);
 
@@ -58,14 +64,18 @@ begin
 			actual_dots <= (others => '0'); 
 			case State is
 				when Speed =>
+					speed_enable <= '1';
 					actual_dots <= speed_dots;
 					actual_string <= speed_string;
 					if( middle_pressed ) then
+						speed_enable <= '0';
 						State := WelcomeProtocol;
 					end if;
 				when Protocol =>
-					actual_string <= "prot-val";
+					actual_string <= prot_string;
+					prot_enable <= '1';
 					if( middle_pressed ) then
+						prot_enable <= '0';
 						State := WelcomeSpeed;
 					end if;
 				when WelcomeSpeed =>
@@ -104,8 +114,18 @@ begin
 			     buttonUp       => buttonUp,
 			     buttonDown     => buttonDown,
 			     keyboard_clock => clock_1kHz,
-			     dot_clock      => clock_10Hz);
+			     dot_clock      => clock_10Hz,
+			     control_enable => speed_enable);
 
+	prot_chooser_int : entity work.protocolChooser
+		port map(displayString  => prot_string,
+			     displayDots    => prot_dots,
+			     modeOut        => prot_selected_mode,
+			     buttonLeft     => buttonLeft,
+			     buttonRight    => buttonRight,
+			     keyboard_clock => clock_1kHz,
+			     control_enable => prot_enable);
+	
 	out_clock <= clock_prescaled;
 	prescalerTestControlled : entity work.prescaler
        port map(clk_input => clock_100MHz,
