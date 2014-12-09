@@ -6,12 +6,12 @@ entity main is
 	port (
 		digits : out std_logic_vector(7 downto 0);
 		segments : out std_logic_vector(7 downto 0);
-		buttonMiddle : in std_logic;
-		buttonLeft : in std_logic;
-		buttonRight : in std_logic;
-		buttonUp : in std_logic;
-		buttonDown : in std_logic;
-		switches : in std_logic_vector(7 downto 0);
+		buttonMiddleRaw : in std_logic;
+		buttonLeftRaw : in std_logic;
+		buttonRightRaw : in std_logic;
+		buttonUpRaw : in std_logic;
+		buttonDownRaw : in std_logic;
+		switchesRaw : in std_logic_vector(7 downto 0);
 		LED : out std_logic_vector(7 downto 0);
 		out_clock : out std_logic;
 		clock_100MHz : in std_logic
@@ -24,18 +24,17 @@ signal clock_1kHz : std_logic;
 signal clock_10Hz : std_logic;
 signal clock_1Hz : std_logic;
 
-signal buttonMiddleDebounced : std_logic;
-signal buttonLeftDebounced : std_logic;
-signal buttonRightDebounced : std_logic;
-signal buttonUpDebounced : std_logic;
-signal buttonDownDebounced : std_logic;
+signal buttonMiddle : std_logic;
+signal buttonLeft : std_logic;
+signal buttonRight : std_logic;
+signal buttonUp : std_logic;
+signal buttonDown : std_logic;
 
 signal prescaler_value : integer range 0 to 10**8 := 1;
 signal clock_prescaled : std_logic;
 
 signal uart_data : std_logic_vector(7 downto 0) := "00000000";
 signal uart_TC : std_logic := '0';
-
 
 signal speed_string : string(8 downto 1) := "12345678";
 signal speed_dots : std_logic_vector(8 downto 1) := "00000000";
@@ -55,21 +54,19 @@ begin
 		variable middle_pressed : boolean := FALSE;
 	begin
 		if( rising_edge(clock_1kHz) ) then
-			middle_pressed := ( last_change_button = '0' and buttonMiddleDebounced = '1' );
+			middle_pressed := ( last_change_button = '0' and buttonMiddle = '1' );
 			actual_dots <= (others => '0'); 
 			case State is
 				when Speed =>
 					actual_dots <= speed_dots;
 					actual_string <= speed_string;
 					if( middle_pressed ) then
-						StateAfterWait := WelcomeProtocol;
-						State := Wait1sec;
+						State := WelcomeProtocol;
 					end if;
 				when Protocol =>
 					actual_string <= "prot-val";
 					if( middle_pressed ) then
-						StateAfterWait := WelcomeSpeed;
-						State := Wait1sec;
+						State := WelcomeSpeed;
 					end if;
 				when WelcomeSpeed =>
 					actual_string <= "-speed--";
@@ -93,7 +90,7 @@ begin
 						State := StateAfterWait;
 					end if;
 			end case;
-			last_change_button := buttonMiddleDebounced;
+			last_change_button := buttonMiddle;
 		end if;
 	end process displayStateMaching;
 	
@@ -102,10 +99,10 @@ begin
 		port map(displayString  => speed_string,
 			     displayDots    => speed_dots,
 			     integer_value  => prescaler_value,
-			     buttonLeft     => buttonLeftDebounced,
-			     buttonRight    => buttonRightDebounced,
-			     buttonUp       => buttonUpDebounced,
-			     buttonDown     => buttonDownDebounced,
+			     buttonLeft     => buttonLeft,
+			     buttonRight    => buttonRight,
+			     buttonUp       => buttonUp,
+			     buttonDown     => buttonDown,
 			     keyboard_clock => clock_1kHz,
 			     dot_clock      => clock_10Hz);
 
@@ -146,31 +143,31 @@ begin
 			     
 	debouncerButtonMiddle : entity work.debouncer
 		generic map(TicksBetweenEdges => 10)
-		port map(input  => buttonMiddle,
-			     output => buttonMiddleDebounced,
+		port map(input  => buttonMiddleRaw,
+			     output => buttonMiddle,
 			     clock  => clock_1kHz);
 	debouncerButtonLeft : entity work.debouncer
 		generic map(TicksBetweenEdges => 10)
-		port map(input  => buttonLeft,
-			     output => buttonLeftDebounced,
+		port map(input  => buttonLeftRaw,
+			     output => buttonLeft,
 			     clock  => clock_1kHz);
 	
 	debouncerButtonRight : entity work.debouncer
 		generic map(TicksBetweenEdges => 10)
-		port map(input  => buttonRight,
-			     output => buttonRightDebounced,
+		port map(input  => buttonRightRaw,
+			     output => buttonRight,
 			     clock  => clock_1kHz);
 	
 	debouncerUpRight : entity work.debouncer
          generic map(TicksBetweenEdges => 10)
-         port map(input  => buttonUp,
-                  output => buttonUpDebounced,
+         port map(input  => buttonUpRaw,
+                  output => buttonUp,
                   clock  => clock_1kHz);
                   
 	debouncerDownRight : entity work.debouncer
           generic map(TicksBetweenEdges => 10)
-          port map(input  => buttonDown,
-                   output => buttonDownDebounced,
+          port map(input  => buttonDownRaw,
+                   output => buttonDown,
                    clock  => clock_1kHz);
 
 --------------- PRESCALERS ------------------------------------
