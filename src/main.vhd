@@ -40,6 +40,12 @@ signal speed_string : string(8 downto 1);
 signal speed_dots : std_logic_vector(8 downto 1);
 signal speed_enable : std_logic := '0';
 
+signal exp_speed_string : string(5 downto 1);
+signal exp_speed_dots : std_logic_vector(5 downto 1);
+signal exp_speed_enable : std_logic := '0';
+signal exp_speed_base : integer;
+signal exp_speed_exponent : integer; 
+
 signal prot_string : string(8 downto 1);
 signal prot_dots : std_logic_vector(8 downto 1);
 signal prot_enable : std_logic := '0';
@@ -72,10 +78,12 @@ begin
 						State := WelcomeProtocol;
 					end if;
 				when Protocol =>
-					actual_string <= prot_string;
-					prot_enable <= '1';
+					actual_string <= exp_speed_string; --prot_string;
+					--prot_enable <= '1';
+					exp_speed_enable <= '1';
 					if( middle_pressed ) then
-						prot_enable <= '0';
+						--prot_enable <= '0';
+						exp_speed_enable <= '0';
 						State := WelcomeSpeed;
 					end if;
 				when WelcomeSpeed =>
@@ -116,6 +124,19 @@ begin
 			     keyboard_clock => clock_1kHz,
 			     dot_clock      => clock_10Hz,
 			     control_enable => speed_enable);
+
+	expNum_inst : entity work.scientificNumberController
+		port map(displayString    => exp_speed_string,
+			     displayDots      => exp_speed_dots,
+			     integer_base     => exp_speed_base,
+			     integer_exponent => exp_speed_exponent,
+			     buttonLeft       => buttonLeft,
+			     buttonRight      => buttonRight,
+			     buttonUp         => buttonUp,
+			     buttonDown       => buttonDown,
+			     keyboard_clock   => clock_1kHz,
+			     dot_clock        => clock_1Hz,
+			     control_enable   => exp_speed_enable);
 
 	prot_chooser_int : entity work.protocolChooser
 		port map(displayString  => prot_string,
