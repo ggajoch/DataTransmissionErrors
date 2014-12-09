@@ -18,8 +18,8 @@ entity numberController is
 end entity numberController;
 
 architecture RTL of numberController is
-	signal digits_string : string(nr_of_digits downto 1);
-	signal output_integer : integer range 0 to (10**nr_of_digits-1);
+	signal digits_string : string(nr_of_digits downto 1) := (others => '0');
+	signal output_integer : integer range 0 to (10**nr_of_digits-1) := 0;
 	signal Zeros : std_logic_vector(nr_of_digits-2 downto 0) := (others => '0');
 	signal changing_nr : integer range 1 to nr_of_digits := 1;
 begin
