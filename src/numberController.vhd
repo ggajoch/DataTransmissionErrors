@@ -12,7 +12,8 @@ entity numberController is
 		buttonUp : in std_logic;
 		buttonDown : in std_logic;
 		keyboard_clock : in std_logic;
-		dot_clock : in std_logic
+		dot_clock : in std_logic;
+		control_enable : in std_logic
 	);
 end entity numberController;
 
@@ -34,34 +35,35 @@ begin
 			variable increment : integer range 0 to (10**nr_of_digits-1) := 1;
 		begin
 			if( rising_edge(keyboard_clock) ) then
-				if( last_Left = '0' and buttonLeft = '1') then
-					if( changing_nr < nr_of_digits ) then
-						changing_nr <= changing_nr+1;
-						increment := 10*increment;
+				if ( control_enable = '1' ) then 
+					if( last_Left = '0' and buttonLeft = '1') then
+						if( changing_nr < nr_of_digits ) then
+							changing_nr <= changing_nr+1;
+							increment := 10*increment;
+						end if;
 					end if;
-				end if;
-				
-				if( last_Right = '0' and buttonRight = '1') then
-					if( changing_nr > 1 ) then
-						changing_nr <= changing_nr-1;
-						increment := increment/10;
+					
+					if( last_Right = '0' and buttonRight = '1') then
+						if( changing_nr > 1 ) then
+							changing_nr <= changing_nr-1;
+							increment := increment/10;
+						end if;
 					end if;
-				end if;
-				
-				if( last_Up = '0' and buttonUp = '1') then
-					if( character'pos(digits_string(changing_nr)) < 9 ) then
-						output_integer <= output_integer + increment;
-		                digits_string(changing_nr) <= character'val(character'pos(digits_string(changing_nr)) + 1);
+					
+					if( last_Up = '0' and buttonUp = '1') then
+						if( character'pos(digits_string(changing_nr)) < 9 ) then
+							output_integer <= output_integer + increment;
+			                digits_string(changing_nr) <= character'val(character'pos(digits_string(changing_nr)) + 1);
+			            end if;
 		            end if;
-	            end if;
-				
-				if( last_Down = '0' and buttonDown = '1') then
-					if( character'pos(digits_string(changing_nr)) > 0 ) then
-						output_integer <= output_integer - increment;
-		                digits_string(changing_nr) <= character'val(character'pos(digits_string(changing_nr)) - 1);
+					
+					if( last_Down = '0' and buttonDown = '1') then
+						if( character'pos(digits_string(changing_nr)) > 0 ) then
+							output_integer <= output_integer - increment;
+			                digits_string(changing_nr) <= character'val(character'pos(digits_string(changing_nr)) - 1);
+			            end if;
 		            end if;
-	            end if;
-	                        
+	      		end if;                  
 				last_Left := buttonLeft;
 				last_Right := buttonRight;
 				last_Up := buttonUp;
