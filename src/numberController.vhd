@@ -51,14 +51,14 @@ begin
 					end if;
 					
 					if( last_Up = '0' and buttonUp = '1') then
-						if( character'pos(digits_string(changing_nr)) < 9 ) then
+						if( character'pos(digits_string(changing_nr)) < character'pos('9') ) then
 							output_integer <= output_integer + increment;
 			                digits_string(changing_nr) <= character'val(character'pos(digits_string(changing_nr)) + 1);
 			            end if;
 		            end if;
 					
 					if( last_Down = '0' and buttonDown = '1') then
-						if( character'pos(digits_string(changing_nr)) > 0 ) then
+						if( character'pos(digits_string(changing_nr)) > character'pos('0') ) then
 							output_integer <= output_integer - increment;
 			                digits_string(changing_nr) <= character'val(character'pos(digits_string(changing_nr)) - 1);
 			            end if;
