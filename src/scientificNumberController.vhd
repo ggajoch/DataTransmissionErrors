@@ -20,7 +20,7 @@ end entity scientificNumberController;
 
 architecture RTL of scientificNumberController is
 	constant zeros_digits : string(nr_of_significant_digits+1 downto 1) := (others => '0');
-	signal digits_string : string(nr_of_significant_digits+3 downto 1) := zeros_digits & "E1";
+	signal digits_string : string(nr_of_significant_digits+3 downto 1) := zeros_digits & "e1";
 	signal buf_integer_base : integer range 0 to (10**(nr_of_significant_digits+1)-1) := 0;
 	signal buf_integer_exponent : integer range 0 to 9 := 1;
 	constant Zeros : std_logic_vector(nr_of_significant_digits+1 downto 1) := (others => '0');
