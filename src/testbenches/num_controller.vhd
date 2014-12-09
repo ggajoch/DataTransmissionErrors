@@ -13,6 +13,7 @@ architecture Test of test_bench is
 	signal buttonDown : std_logic := '0';
 	signal keyboard_clock : std_logic := '0';
 	signal dot_clock : std_logic := '0';
+	signal speed_enable : std_logic := '0';
 begin
 	num1 : entity work.numberController(RTL)
 		port map( displayString => displayString,
@@ -22,8 +23,8 @@ begin
 				buttonUp =>  buttonUp,
 				buttonDown =>  buttonDown,
 				keyboard_clock =>  keyboard_clock,
-				dot_clock =>  dot_clock			
-				);
+				dot_clock =>  dot_clock,
+				control_enable => speed_enable);
 				
 				
 	keys : process is
