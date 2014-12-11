@@ -80,6 +80,7 @@ begin
 		buttonLeft <= '0';
 		wait for 10 ns;
 		buttonUp <= '1';
+		wait for 10 ns;
 		
 		buttonLeft <= '1';
 		wait for 10 ns;
