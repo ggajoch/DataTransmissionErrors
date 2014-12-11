@@ -30,9 +30,9 @@ begin
 	dot_process : process(changing_nr, dot_clock) is
 	begin
 		if( changing_nr = displayString'high ) then
-			displayDots <= to_stdlogicvector(to_bitvector(Zeros & dot_clock) sll (changing_nr)) & "0";
+			displayDots <= dot_clock & Zeros & '0'; 
 		else
-			displayDots <= "1" & to_stdlogicvector(to_bitvector(Zeros & dot_clock) sll (changing_nr));
+			displayDots <= "1" & to_stdlogicvector(to_bitvector(Zeros & dot_clock) sll (changing_nr-1));			
 		end if;
 	end process dot_process;
 	
