@@ -35,7 +35,7 @@ architecture RTL of PLLValues is
 	signal axi4_write_response : std_logic_vector(1 downto 0); -- 00 - OK
 	signal commmand_done : std_logic;
 	
-	type FSMStates_t is (Idle, Valid1, Valid2, Write, WaitF);
+	type FSMStates_t is (Idle, Valid1, Valid2, Write, WaitTicks, WaitF);
 	
 begin
 	
@@ -55,6 +55,7 @@ begin
 		variable State : FSMStates_t := Idle;
 		variable NextState : FSMStates_t := Idle;
 		variable last_data_valid : std_logic := '0';
+		variable ticks_left : integer := 0;
 		variable address_Reg0 : std_logic_vector(10 downto 0) := "01000000000"; --0x200
 		variable address_Reg23 : std_logic_vector(10 downto 0) := "01001011100"; --0x25C
 	begin
@@ -89,7 +90,15 @@ begin
 					
 				when Write =>
 					write_valid <= '1';
-					State := WaitF;
+					ticks_left := 10;
+					NextState := WaitF;
+					State := WaitTicks;
+				when WaitTicks =>
+					if( ticks_left > 0 ) then
+						ticks_left := ticks_left-1;
+					else
+						State := NextState;
+					end if;
 				when WaitF =>
 					write_valid <= '0';
 					if( commmand_done = '1' ) then

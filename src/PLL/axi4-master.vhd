@@ -49,8 +49,10 @@ architecture RTL of axi4masterPLL is
 	-------------------- MISC ----------------------
 	------------------------------------------------
 	
+	signal commmand_done_sig : std_logic := '0';
 	type ProcessAXI4State_t is (Idle, addressWait, addressValid, dataWait, dataValid, waitResponse);
 	
+	signal State : ProcessAXI4State_t := Idle;
 begin
 	
 	------------------------------------------------
@@ -65,36 +67,42 @@ begin
 	---------------- MAIN PROCESS ------------------
 	------------------------------------------------
 	
+	commmand_done <= commmand_done_sig;
+	s_axi_wready <= '1';
+	s_axi_awready <= '1';
+	s_axi_bvalid <= '1';
+	s_axi_bresp <= "01";
+	
 	mainProc : process(clock_100MHz) is
 		variable last_write_valid : std_logic := '0';
-		variable State : ProcessAXI4State_t := Idle;
+		
 	begin
 		if( rising_edge(clock_100MHz) ) then
-			commmand_done <= '0';
+			commmand_done_sig <= '0';
 			case State is 
 				when Idle =>
 					if( last_write_valid = '0' and write_valid = '1' ) then
 						s_axi_awaddr <= write_address;
 						s_axi_wdata <= write_data;
 						s_axi_wstb <= "1111";
-						State := addressWait;
+						State <= addressWait;
 						
 						s_axi_bready <= '0';
 						s_axi_awvalid <= '0';
 						s_axi_wvalid <= '0';
-						
-						commmand_done <= '1';
+					else
+						commmand_done_sig <= '1';
 					end if;
 				when addressWait =>
 					if ( s_axi_awready = '1' ) then
-						State := addressValid;
+						State <= addressValid;
 					end if;
 				when addressValid =>
 					s_axi_awvalid <= '1';
-					State := dataWait;
+					State <= dataWait;
 				when dataWait =>
 					if ( s_axi_wready = '1' ) then
-						State := dataValid;
+						State <= dataValid;
 					end if;
 				when dataValid =>
 					s_axi_awvalid <= '0';
@@ -104,7 +112,7 @@ begin
 					if ( s_axi_bvalid = '1' ) then
 						s_axi_wvalid <= '0';
 						axi4_write_response <= s_axi_bresp;
-						State := Idle;
+						State <= Idle;
 					end if;
 			end case;
 			
