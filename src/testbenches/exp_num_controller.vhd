@@ -5,8 +5,8 @@ entity test_bench_exp_num_ctrl is
 end test_bench_exp_num_ctrl;
 
 architecture Test of test_bench_exp_num_ctrl is
-	signal displayString : string(5 downto 1);
-	signal displayDots : std_logic_vector(5 downto 1);		
+	signal displayString : string(4 downto 1);
+	signal displayDots : std_logic_vector(4 downto 1);		
 	signal buttonLeft : std_logic := '0';
 	signal buttonRight : std_logic := '0';
 	signal buttonUp : std_logic := '0';
@@ -20,7 +20,7 @@ architecture Test of test_bench_exp_num_ctrl is
 begin
 	
 	num : entity work.scientificNumberController
-		generic map(nr_of_significant_digits => 2)
+		generic map(nr_of_significant_digits => 1)
 		port map(displayString    => displayString,
 			     displayDots      => displayDots,
 			     integer_base     => integer_base,
