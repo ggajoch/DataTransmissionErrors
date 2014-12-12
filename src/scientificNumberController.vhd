@@ -25,13 +25,15 @@ architecture RTL of scientificNumberController is
 	signal buf_integer_exponent : integer range 0 to 9 := 1;
 	constant Zeros : std_logic_vector(nr_of_significant_digits+1 downto 1) := (others => '0');
 	signal changing_nr : integer range 1 to nr_of_significant_digits+3 := 3;
+	
+	signal digits_actual : integer range 1 to nr_of_significant_digits := nr_of_significant_digits;
 begin
 	
 	displayString <= digits_string;
 	
-	dot_process : process(changing_nr, dot_clock) is
+	dot_process : process(changing_nr, dot_clock, digits_actual) is
 	begin
-		if( changing_nr = displayString'high ) then
+		if( changing_nr = digits_actual+3 ) then
 			displayDots <= dot_clock & Zeros & '0'; 
 		else
 			displayDots <= "1" & to_stdlogicvector(to_bitvector(Zeros & dot_clock) sll (changing_nr-1));			
