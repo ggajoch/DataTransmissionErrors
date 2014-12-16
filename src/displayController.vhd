@@ -12,7 +12,9 @@ entity displayController is
 		clock_keyboard : in std_logic;
 		protocol_sel_out : out integer range 0 to 99;
 		sci_controller_integer_out : out integer range 0 to 99;
-		sci_controller_exponent_out : out integer range 0 to 9
+		sci_controller_exponent_out : out integer range 0 to 9;
+		display_string : out string(8 downto 1);
+		display_dots : out std_logic_vector(8 downto 1)
 	);
 end entity displayController;
 
@@ -33,6 +35,9 @@ architecture RTL of displayController is
 
 	type displayStates is (Speed, Protocol, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, Welcome);
 begin
+	
+	display_string <= actual_string;
+	display_dots <= actual_dots;
 	
 	sci_controller_integer_out <= sci_controller_integer;
 	sci_controller_exponent_out <= sci_controller_exponent;

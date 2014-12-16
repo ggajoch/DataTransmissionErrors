@@ -55,7 +55,9 @@ begin
 			     clock_keyboard              => clock_1kHz,
 			     protocol_sel_out            => protocol_sel,
 			     sci_controller_integer_out  => speed_integer,
-			     sci_controller_exponent_out => speed_exponent);
+			     sci_controller_exponent_out => speed_exponent,
+			     display_string 			 => actual_string,
+			     display_dots				 => actual_dots);
 	
 	out_clock <= clock_prescaled;
 --	prescalerTestControlled : entity work.prescaler
