@@ -32,6 +32,8 @@ begin
 	
 	--------------- PLL -----------------
 	
+	PLL_vals <= clock_100MHz & clock_100MHz & clock_100MHz & clock_100MHz & clock_100MHz & clock_100MHz & clock_100MHz & clock_100MHz;
+	
 	------------- PRESCALER -------------
 	
 	index <= speed_integer + 90*speed_exp;
