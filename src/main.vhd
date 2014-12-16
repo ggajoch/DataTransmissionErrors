@@ -58,11 +58,11 @@ begin
 			     sci_controller_exponent_out => speed_exponent);
 	
 	out_clock <= clock_prescaled;
-	prescalerTestControlled : entity work.prescaler
-       port map(clk_input => clock_100MHz,
-                clk_output => clock_prescaled,
-                reset => '0',
-                presc => prescaler_value);
+--	prescalerTestControlled : entity work.prescaler
+--       port map(clk_input => clock_100MHz,
+--                clk_output => clock_prescaled,
+--                reset => '0',
+--                presc => prescaler_value);
 
 
 
@@ -73,10 +73,20 @@ begin
 			     segments => segments,
 			     segment_change_clock => clock_1kHz);
 
+	--------------- CLOCK GENERATION ------------------------
 
---------------- UART ------------------------------------
 
-	uart_inst : entity work.TxTest
+	clock_gen_inst : entity work.clockController
+		port map(speed_integer => speed_integer,
+			     speed_exp     => speed_exponent,
+			     clock_100MHz  => clock_100MHz,
+			     clock_out     => clock_prescaled,
+			     reset_presc   => '0');
+
+
+	--------------- UART ------------------------------------
+
+	uart_inst : entity work.UART_Tx	
 		port map(TxPin    => LED(0),
 			     TxClock  => clock_prescaled,
 			     Data     => uart_data,
