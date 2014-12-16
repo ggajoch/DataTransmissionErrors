@@ -14,6 +14,7 @@ entity main is
 		switchesRaw : in std_logic_vector(7 downto 0);
 		LED : out std_logic_vector(7 downto 0);
 		out_clock : out std_logic;
+		uart_out : out std_logic;
 		clock_100MHz : in std_logic
 	);
 end entity main;
@@ -89,7 +90,7 @@ begin
 	--------------- UART ------------------------------------
 
 	uart_inst : entity work.UART_Tx	
-		port map(TxPin    => LED(0),
+		port map(TxPin    => uart_out,
 			     TxClock  => clock_prescaled,
 			     Data     => uart_data,
 			     DataFlag => clock_10Hz,
