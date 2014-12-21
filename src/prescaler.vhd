@@ -27,10 +27,10 @@ begin
 			cnt := 0;
 			state := '0';
 		elsif( rising_edge(clk_input) ) then
-			if( state = '0' and cnt = timeLow ) then
+			if( state = '0' and cnt >= timeLow ) then
 				cnt := 1;
 				state := '1';
-			elsif( state = '1' and cnt = timeHigh ) then
+			elsif( state = '1' and cnt >= timeHigh ) then
 				cnt := 1;
 				state := '0';
 			else
