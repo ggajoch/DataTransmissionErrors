@@ -67,6 +67,8 @@ architecture RTL of UART_Rx is
 	type State_t is (Idle, ResetOff, WaitForDataFlag);
 	signal State_SamplingOut : State_t;
 	signal DataFlag_sig : std_logic;
+	signal timeout_wait : std_logic;
+	signal timeout_occured : std_logic;
 begin
 	
 	process(fast_clock) is
@@ -80,13 +82,18 @@ begin
 				when Idle =>
 					if( last_in = '1' and RxPin = '0' ) then
 						sampling_clock_reset <= '1';
+						timeout_wait <= '1';
 						State := ResetOff;
 					end if;
 				when ResetOff =>
+					timeout_wait <= '0';
 					sampling_clock_reset <= '0';
 					State := WaitForDataFlag;
-				when WaitForDataFlag =>
+				when WaitForDataFlag =>					
 					if( DataFlag_sig = '1' ) then
+						State := Idle;
+					end if;
+					if( timeout_occured = '1' ) then
 						State := Idle;
 					end if;
 			end case;
@@ -94,6 +101,22 @@ begin
 			State_SamplingOut <= State;
 		end if;
 	end process ;
+	
+	timeout_process : process(timeout_wait, sampling_clock) is
+		variable waitt : integer range 0 to 10 := 0;
+	begin
+		if( timeout_wait = '1' ) then
+			timeout_occured <= '0';
+			waitt := 10;
+		elsif( rising_edge(sampling_clock) ) then
+			if( waitt > 0 ) then
+				waitt := waitt-1;
+			else
+				timeout_occured <= '1';
+			end if;
+		end if;
+	end process timeout_process;
+	
 	
 	
 	DataFlag <= DataFlag_sig;
