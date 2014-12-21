@@ -124,7 +124,6 @@ begin
 	usartRX_inst : entity work.USART_Rx
 		port map(RxPin             => usart_in_data,
 			     RxSynchPin        => usart_in_clock,
-			     clock             => clock_1MHz,
 			     Data              => LED(7 downto 0),
 			     DataFlag          => LED(8),
 			     TransmissionError => LED(9));

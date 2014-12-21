@@ -60,7 +60,6 @@ use ieee.numeric_std.all;
 entity USART_Rx is
 	port( RxPin : in std_logic;
 		  RxSynchPin : in std_logic;
-		  clock : in std_logic;
 		  Data : out std_logic_vector(7 downto 0);
 		  DataFlag : out std_logic;
 		  TransmissionError : out std_logic
@@ -84,7 +83,6 @@ begin
 						DataRecv(9) := RxPin;
 						State := Receive;
 						BitsLeft := 8;
-						TransmissionError <= '0';
 					end if;
 				when Receive =>
 					DataRecv(BitsLeft) := RxPin;
@@ -94,16 +92,14 @@ begin
 						if DataRecv(9) /= '1' or DataRecv(0) /= '1' then
 							TransmissionError <= '1';
 						end if;
-						State := SetFlag;
-					end if;
-					
-					if( BitsLeft = 0 ) then -- only stopbit left
 						Data <= DataRecv(8 downto 1);
+						State := SetFlag;
 					end if;
 				when SetFlag =>
 					DataFlag <= '1';
 					State := ClearFlag;
 				when ClearFlag =>
+					TransmissionError <= '0';
 					DataFlag <= '0';
 					State  := Idle;
 			end case;
