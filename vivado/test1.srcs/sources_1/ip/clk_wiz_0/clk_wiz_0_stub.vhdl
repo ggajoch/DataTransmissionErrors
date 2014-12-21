@@ -1,7 +1,7 @@
 -- Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2014.4 (win64) Build 1071353 Tue Nov 18 18:29:27 MST 2014
--- Date        : Sun Dec 21 02:28:04 2014
+-- Date        : Sun Dec 21 19:45:48 2014
 -- Host        : RAMEND running 64-bit Service Pack 1  (build 7601)
 -- Command     : write_vhdl -force -mode synth_stub
 --               G:/repos/DataTransmissionErrors/DataTransmissionErrors/vivado/test1.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0_stub.vhdl

@@ -11,10 +11,16 @@ entity main is
 		buttonRightRaw : in std_logic;
 		buttonUpRaw : in std_logic;
 		buttonDownRaw : in std_logic;
-		switchesRaw : in std_logic_vector(7 downto 0);
-		LED : out std_logic_vector(7 downto 0);
+		switchesRaw : in std_logic_vector(15 downto 0);
+		LED : out std_logic_vector(15 downto 0);
 		out_clock : out std_logic;
 		uart_out : out std_logic;
+		
+		usart_out_clock : out std_logic;
+		usart_out_data : out std_logic;
+		usart_in_clock : in std_logic;
+		usart_in_data : in std_logic;
+		
 		clock_100MHz : in std_logic
 	);
 end entity main;
@@ -44,6 +50,11 @@ signal protocol_sel : integer range 0 to 99;
 signal speed_integer : integer range 0 to 99;
 signal speed_exponent : integer range 0 to 9;
 
+
+signal usart_out : std_logic;
+signal usart_out_clock_SIG : std_logic;
+signal usart_TC : std_logic;
+
 begin
 	
 	display_inst : entity work.displayController
@@ -61,13 +72,6 @@ begin
 			     display_dots				 => actual_dots);
 	
 	out_clock <= clock_prescaled;
-	
---	prescalerTestControlled : entity work.prescaler
---       port map(clk_input => clock_100MHz,
---                clk_output => clock_prescaled,
---                reset => '0',
---                presc => prescaler_value);
-
 
 
 	SevenSegControl_inst : entity work.SevenSegControl
@@ -103,6 +107,27 @@ begin
 			uart_data <= std_logic_vector(unsigned(uart_data)+1);
 		end if;
 	end process uart_proc;
+	
+	
+	usartTX_inst : entity work.USART_Tx
+		port map(TxPin      => usart_out,
+			     TxSynchPin => usart_out_clock_SIG,
+			     TxClock    => clock_prescaled,
+			     Data       => uart_data,
+			     DataFlag   => clock_10Hz,
+			     TC         => usart_TC); 
+	
+	usart_out_clock <= usart_out_clock_SIG;
+	usart_out_data <= usart_out;
+	
+	
+	usartRX_inst : entity work.USART_Rx
+		port map(RxPin             => usart_in_data,
+			     RxSynchPin        => usart_in_clock,
+			     clock             => clock_1MHz,
+			     Data              => LED(7 downto 0),
+			     DataFlag          => LED(8),
+			     TransmissionError => LED(9));
 		
 --------------- DEBOUNCING ------------------------------------
 			     
