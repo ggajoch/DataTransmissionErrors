@@ -109,6 +109,8 @@ begin
 	end process uart_proc;
 	
 	
+	--------------- USART ------------------------------------
+	
 	usartTX_inst : entity work.USART_Tx
 		port map(TxPin      => usart_out,
 			     TxSynchPin => usart_out_clock_SIG,
