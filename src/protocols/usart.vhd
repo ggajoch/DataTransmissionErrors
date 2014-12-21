@@ -91,7 +91,7 @@ begin
 					if( BitsLeft > 0 ) then
 						BitsLeft := BitsLeft - 1;
 					else --all data received
-						if DataRecv(9) /= '1' or DataRecv(0) /= '0' then
+						if DataRecv(9) /= '1' or DataRecv(0) /= '1' then
 							TransmissionError <= '1';
 						end if;
 						State := SetFlag;
