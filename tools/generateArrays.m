@@ -2,8 +2,7 @@ clear all; clc;
 format shortEng;
 
 
-%available = [500e6, 495e3, 490e3, 485e6, 480e3, 475e3, 470e6, 465e3, 460e6, 455e6, 450e6, 440e6, 430e6, 425e6, 410e6, 400e6, 350e6, 300e6, 265e6];
-available = [400e6, 390e6, 360e6, 350e6, 340e6, 320e6, 300e6, 250e6];
+available = [500e6, 495e3, 490e3, 485e6, 480e3, 475e3, 470e6, 465e3, 460e6, 455e6, 450e6, 440e6, 430e6, 425e6, 410e6, 400e6, 350e6, 300e6, 265e6];
 available = [ available available/1e2 available/1e4];
 available = sort(available,'descend')
 available = available
@@ -111,23 +110,38 @@ fileSources = fopen('sources.txt','w')
 fileDividers = fopen('dividers.txt','w')
 fileFrequncyActual = fopen('freqActual.txt','w')
 
-fprintf(fileSources,'type LUT_Sources_t is array(10 to %d) of integer;\n',length(res)+10)
-fprintf(fileDividers,'type LUT_Dividers_t is array(10 to %d) of integer;\n',length(res)+10)
-fprintf(fileFrequncyActual,'type LUT_Frequency_t is array(10 to %d) of string;\n',length(res)+10)
+fprintf(fileSources,'type LUT_Sources_%d_t is array(10 to %d) of integer;\n',0,numbExp(1))
+fprintf(fileDividers,'type LUT_Dividers_%d_t is array(10 to %d) of integer;\n',0,numbExp(1))
+fprintf(fileFrequncyActual,'type LUT_Frequency_%d_t is array(10 to %d) of string;\n',0,numbExp(1))
 
-fprintf(fileSources,'signal LUT_Sources : LUT_Sources_t := (')
-fprintf(fileDividers,'signal LUT_Dividers : LUT_Dividers_t := (')
-fprintf(fileFrequncyActual,'signal LUT_Frequency : LUT_Frequency_t := (')
+fprintf(fileSources,'signal LUT_Sources_%d : LUT_Sources_%d_t := (',0,0)
+fprintf(fileDividers,'signal LUT_Dividers_%d : LUT_Dividers_%d_t := (',0,0)
+fprintf(fileFrequncyActual,'signal LUT_Frequency_%d : LUT_Frequency_%d_t := (',0,0)
 
-for i=1:length(res)-1
-    fprintf(fileSources,'%d, ',res(i).source);
-    fprintf(fileDividers,'%d, ',res(i).div);
-    fprintf(fileFrequncyActual, '"%s", ', [num2str(round(10*res(i).freqGenerating)) 'E' num2str(round(res(i).expGenerating))])
+for i=1:length(res)
+    if( i > 1 )
+        if res(i).expDisplay ~= res(i-1).expDisplay
+            fprintf(fileSources,'type LUT_Sources_%d_t is array(10 to %d) of integer;\n',res(i).expDisplay,numbExp(res(i).expDisplay+1))
+            fprintf(fileDividers,'type LUT_Dividers_%d_t is array(10 to %d) of integer;\n',res(i).expDisplay,numbExp(res(i).expDisplay+1))
+            fprintf(fileFrequncyActual,'type LUT_Frequency_%d_t is array(10 to %d) of string;\n',res(i).expDisplay,numbExp(res(i).expDisplay+1))
+
+            fprintf(fileSources,'signal LUT_Sources_%d : LUT_Sources_%d_t := (',res(i).expDisplay,res(i).expDisplay)
+            fprintf(fileDividers,'signal LUT_Dividers_%d : LUT_Dividers_%d_t := (',res(i).expDisplay,res(i).expDisplay)
+            fprintf(fileFrequncyActual,'signal LUT_Frequency_%d : LUT_Frequency_%d_t := (',res(i).expDisplay,res(i).expDisplay)
+        end
+        if i == length(res) || res(i).expDisplay ~= res(i+1).expDisplay %last element in table
+            fprintf(fileSources,'%d);\n',res(i).source);
+            fprintf(fileDividers,'%d);\n',res(i).div);
+            
+            
+            fprintf(fileFrequncyActual, '"%s")\n', [num2str(round(10*res(i).freqGenerating)) 'E' num2str(round(res(i).expGenerating))])
+        else
+            fprintf(fileSources,'%d, ',res(i).source);
+            fprintf(fileDividers,'%d, ',res(i).div);
+            fprintf(fileFrequncyActual, '"%s", ', [num2str(round(10*res(i).freqGenerating)) 'E' num2str(round(res(i).expGenerating))])
+        end
+    end
 end
-
-fprintf(fileSources,'%d);\n',res(i).source);
-fprintf(fileDividers,'%d);\n',res(i).div);
-fprintf(fileFrequncyActual, '"%s")\n', [num2str(round(10*res(i).freqGenerating)) 'E' num2str(round(res(i).expGenerating))])
 
 fclose(fileSources);
 fclose(fileDividers);

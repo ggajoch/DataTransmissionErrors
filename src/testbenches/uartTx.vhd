@@ -13,7 +13,7 @@ architecture Test of test_bench_uartTx is
 	signal TC : std_logic;
 	
 begin
-	uart_inst : entity work.UART_Tx
+	uart_inst : entity work.TxTest
 		port map(TxPin    => TxPin,
 			     TxClock  => TxClock,
 			     Data     => Data,

@@ -2,6 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library unisim;
+use unisim.vcomponents.all;
+
 entity main is
 	port (
 		digits : out std_logic_vector(7 downto 0);
@@ -44,96 +47,41 @@ signal protocol_sel : integer range 0 to 99;
 signal speed_integer : integer range 0 to 99;
 signal speed_exponent : integer range 0 to 9;
 
+COMPONENT selectio_wiz_0
+  PORT (
+    data_out_to_pins : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+    clk_in : IN STD_LOGIC;
+    clk_div_in : IN STD_LOGIC;
+    data_out_from_device : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+    clk_reset : IN STD_LOGIC;
+    io_reset : IN STD_LOGIC;
+    clk_to_pins : OUT STD_LOGIC
+  );
+END COMPONENT;
+
+signal uart_out_vec : std_logic_vector(0 downto 0);
+signal clock_1kHzBuf: std_logic;
 begin
 	
-	display_inst : entity work.displayController
-		port map(buttonMiddle                => buttonMiddle,
-			     buttonLeft                  => buttonLeft,
-			     buttonRight                 => buttonRight,
-			     buttonUp                    => buttonUp,
-			     buttonDown                  => buttonDown,
-			     clock_dot                   => clock_10Hz,
-			     clock_keyboard              => clock_1kHz,
-			     protocol_sel_out            => protocol_sel,
-			     sci_controller_integer_out  => speed_integer,
-			     sci_controller_exponent_out => speed_exponent,
-			     display_string 			 => actual_string,
-			     display_dots				 => actual_dots);
-	
-	out_clock <= clock_prescaled;
---	prescalerTestControlled : entity work.prescaler
---       port map(clk_input => clock_100MHz,
---                clk_output => clock_prescaled,
---                reset => '0',
---                presc => prescaler_value);
+	LED(0) <= clock_1Hz;
 
+    uart_out <= uart_out_vec(0);
 
+    presc_in_buf : BUFG
+       port map
+        (O   => clock_1kHzBuf,
+         I   => clock_1kHz);
 
-	SevenSegControl_inst : entity work.SevenSegControl
-		port map(input => actual_string,
-				 input_dots => actual_dots,
-			     digits => digits,
-			     segments => segments,
-			     segment_change_clock => clock_1kHz);
-
-	--------------- CLOCK GENERATION ------------------------
-
-
-	clock_gen_inst : entity work.clockController
-		port map(speed_integer => speed_integer,
-			     speed_exp     => speed_exponent,
-			     clock_100MHz  => clock_100MHz,
-			     clock_out     => clock_prescaled,
-			     reset_presc   => '0');
-
-
-	--------------- UART ------------------------------------
-
-	uart_inst : entity work.UART_Tx	
-		port map(TxPin    => uart_out,
-			     TxClock  => clock_prescaled,
-			     Data     => uart_data,
-			     DataFlag => clock_10Hz,
-			     TC       => uart_TC);
-
-	uart_proc : process(clock_10Hz) is
-	begin
-		if( rising_edge(clock_10Hz) ) then
-			uart_data <= std_logic_vector(unsigned(uart_data)+1);
-		end if;
-	end process uart_proc;
-		
---------------- DEBOUNCING ------------------------------------
-			     
-	debouncerButtonMiddle : entity work.debouncer
-		generic map(TicksBetweenEdges => 10)
-		port map(input  => buttonMiddleRaw,
-			     output => buttonMiddle,
-			     clock  => clock_1kHz);
-	debouncerButtonLeft : entity work.debouncer
-		generic map(TicksBetweenEdges => 10)
-		port map(input  => buttonLeftRaw,
-			     output => buttonLeft,
-			     clock  => clock_1kHz);
-	
-	debouncerButtonRight : entity work.debouncer
-		generic map(TicksBetweenEdges => 10)
-		port map(input  => buttonRightRaw,
-			     output => buttonRight,
-			     clock  => clock_1kHz);
-	
-	debouncerUpRight : entity work.debouncer
-         generic map(TicksBetweenEdges => 10)
-         port map(input  => buttonUpRaw,
-                  output => buttonUp,
-                  clock  => clock_1kHz);
-                  
-	debouncerDownRight : entity work.debouncer
-          generic map(TicksBetweenEdges => 10)
-          port map(input  => buttonDownRaw,
-                   output => buttonDown,
-                   clock  => clock_1kHz);
-
+selectIOTest : selectio_wiz_0
+  PORT MAP (
+    data_out_to_pins => uart_out_vec,
+    clk_in => clock_1kHzBuf,
+    clk_div_in => clock_1kHzBuf,
+    data_out_from_device => "1011000101",
+    clk_reset => '0',
+    io_reset => '0',
+    clk_to_pins => out_clock
+  );
 --------------- PRESCALERS ------------------------------------
                    
     prescaler1M : entity work.prescaler
@@ -158,3 +106,4 @@ begin
                     presc => 1000);
 
 end architecture RTL;
+
