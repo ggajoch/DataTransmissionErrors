@@ -36,7 +36,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/protocols/uart.vhd">
+      <File Path="$PPRDIR/../src/7seg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -48,13 +48,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/debouncer.vhd">
+      <File Path="$PPRDIR/../src/protocols/uart.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/7seg.vhd">
+      <File Path="$PPRDIR/../src/debouncer.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -67,18 +67,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../src/main.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="F:/transfer/transfer/test1/test1.srcs/sources_1/new/PLL/axi4-master.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../src/PLL/axi4-master.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -103,12 +91,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../src/testbenches/PLL.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../src/testbenches/num_controller.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -116,12 +98,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../src/testbenches/exp_num_controller.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../src/PLL/PLLValues.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
