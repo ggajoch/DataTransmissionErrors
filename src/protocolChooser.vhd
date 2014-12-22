@@ -18,13 +18,13 @@ end entity protocolChooser;
 
 
 architecture RTL of protocolChooser is
-	type modesArray_t is array(0 to nr_of_modes-1) of string(8 downto 1);
-	signal modesArray : modesArray_t := ("--UART--", "--USART-");
+	type modesArray_t is array(0 to nr_of_modes-1) of string(8 downto 2);
+	signal modesArray : modesArray_t := ("--uart-", "-usart-");
 	
 	signal modeIter : integer range 0 to nr_of_modes-1 := 0;
 begin 
-	displayDots <= (others => '1');
-	displayString <= modesArray(modeIter);
+	displayDots <= (others => '0');
+	displayString <= modesArray(modeIter) & character'val(48+modeIter);
 	modeOut <= modeIter;
 	
 	process(keyboard_clock) is
@@ -40,13 +40,17 @@ begin
 				if ( control_enable = '1' ) then 
 					if( left_pressed ) then
 						if( modeIter > 0 ) then
-							modeIter <= modeIter-1;							
+							modeIter <= modeIter-1;
+						else
+							modeIter <= nr_of_modes-1;
 						end if; 
 					end if;
 					
 					if( last_Right = '0' and buttonRight = '1') then
 						if( modeIter < nr_of_modes-1 ) then
 							modeIter <= modeIter+1;
+						else
+							modeIter <= 0;
 						end if;
 					end if;
 	      		end if;                  
