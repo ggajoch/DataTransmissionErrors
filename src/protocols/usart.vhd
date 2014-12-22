@@ -89,7 +89,7 @@ begin
 					if( BitsLeft > 0 ) then
 						BitsLeft := BitsLeft - 1;
 					else --all data received
-						if DataRecv(9) /= '1' or DataRecv(0) /= '1' then
+						if DataRecv(9) /= '0' or DataRecv(0) /= '1' then
 							TransmissionError <= '1';
 						end if;
 						Data <= DataRecv(8 downto 1);
