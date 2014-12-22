@@ -16,7 +16,7 @@ signal StateOut : State_t;
 begin
 	process(TxClock) is
 		variable DataToSend : std_logic_vector(9 downto 0);
-		variable BitsLeft : natural := 0;
+		variable BitsLeft : integer range 0 to 9 := 0;
 		variable last_flag : std_logic;
 		variable State : State_t := Idle;
 	begin
@@ -89,7 +89,8 @@ begin
 					timeout_wait <= '0';
 					sampling_clock_reset <= '0';
 					State := WaitForDataFlag;
-				when WaitForDataFlag =>					
+				when WaitForDataFlag =>
+					timeout_wait <= '0';					
 					if( DataFlag_sig = '1' ) then
 						State := Idle;
 					end if;
