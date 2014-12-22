@@ -13,8 +13,9 @@ entity displayController is
 		protocol_sel_out : out integer range 0 to 99;
 		sci_controller_integer_out : out integer range 0 to 99;
 		sci_controller_exponent_out : out integer range 0 to 9;
-		display_string : out string(8 downto 1);
-		display_dots : out std_logic_vector(8 downto 1)
+		digits : out std_logic_vector(7 downto 0);		
+		segments : out std_logic_vector(7 downto 0);
+		segment_mux_clock : in std_logic
 	);
 end entity displayController;
 
@@ -36,8 +37,12 @@ architecture RTL of displayController is
 	type displayStates is (Speed, Protocol, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, Welcome);
 begin
 	
-	display_string <= actual_string;
-	display_dots <= actual_dots;
+	segControl : entity work.SevenSegControl
+		port map(input                => actual_string,
+			     input_dots           => actual_dots,
+			     digits               => digits,
+			     segments             => segments,
+			     segment_change_clock => segment_mux_clock);
 	
 	sci_controller_integer_out <= sci_controller_integer;
 	sci_controller_exponent_out <= sci_controller_exponent;
