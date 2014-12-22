@@ -23,28 +23,29 @@ architecture RTL of protocolChooser is
 	
 	signal modeIter : integer range 0 to nr_of_modes-1 := 0;
 begin 
-	displayDots <= (others => '0');
+	displayDots <= (others => '1');
 	displayString <= modesArray(modeIter);
 	modeOut <= modeIter;
 	
 	process(keyboard_clock) is
 			variable last_Left : std_logic := '0';
 			variable last_Right : std_logic := '0';
+			variable left_pressed : boolean := false;
+			variable right_pressed : boolean := false;
 		begin
 			if( rising_edge(keyboard_clock) ) then
+				left_pressed := ( last_Left = '0' and buttonLeft = '1' );
+				right_pressed := ( last_Right = '0' and buttonRight = '1' );
+				
 				if ( control_enable = '1' ) then 
-					if( last_Left = '0' and buttonLeft = '1') then
-						if( modeIter = 0 ) then
-							modeIter <= nr_of_modes-1;
-						else
-							modeIter <= modeIter-1;
+					if( left_pressed ) then
+						if( modeIter > 0 ) then
+							modeIter <= modeIter-1;							
 						end if; 
 					end if;
 					
 					if( last_Right = '0' and buttonRight = '1') then
-						if( modeIter = nr_of_modes-1 ) then
-							modeIter <= 0;
-						else
+						if( modeIter < nr_of_modes-1 ) then
 							modeIter <= modeIter+1;
 						end if;
 					end if;
