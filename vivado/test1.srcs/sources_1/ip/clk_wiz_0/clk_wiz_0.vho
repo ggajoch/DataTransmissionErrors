@@ -54,13 +54,12 @@
 --  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 --   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 ------------------------------------------------------------------------------
--- CLK_OUT1___190.476______0.000______50.0______129.709____165.732
--- CLK_OUT2___148.148______0.000______50.0______134.617____165.732
--- CLK_OUT3___121.212______0.000______50.0______138.685____165.732
--- CLK_OUT4___111.111______0.000______50.0______140.491____165.732
--- CLK_OUT5____88.889______0.000______50.0______145.244____165.732
--- CLK_OUT6____78.431______0.000______50.0______147.987____165.732
--- CLK_OUT7____70.175______0.000______50.0______150.473____165.732
+-- CLK_OUT1___194.961______0.000______50.0______234.074____403.233
+-- CLK_OUT2___174.653______0.000______50.0______237.555____403.233
+-- CLK_OUT3___149.702______0.000______50.0______242.526____403.233
+-- CLK_OUT4___130.990______0.000______50.0______246.924____403.233
+-- CLK_OUT5___209.583______0.000______50.0______231.817____403.233
+-- CLK_OUT6___116.435______0.000______50.0______250.875____403.233
 --
 ------------------------------------------------------------------------------
 -- Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -80,8 +79,7 @@ port
   clk_out3          : out    std_logic;
   clk_out4          : out    std_logic;
   clk_out5          : out    std_logic;
-  clk_out6          : out    std_logic;
-  clk_out7          : out    std_logic
+  clk_out6          : out    std_logic
  );
 end component;
 
@@ -90,7 +88,7 @@ ATTRIBUTE SYN_BLACK_BOX OF clk_wiz_0 : COMPONENT IS TRUE;
 
 
 ATTRIBUTE BLACK_BOX_PAD_PIN : STRING;
-ATTRIBUTE BLACK_BOX_PAD_PIN OF clk_wiz_0 : COMPONENT IS "clk_in1,clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6,clk_out7";
+ATTRIBUTE BLACK_BOX_PAD_PIN OF clk_wiz_0 : COMPONENT IS "clk_in1,clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6";
 
 -- COMP_TAG_END ------ End COMPONENT Declaration ------------
 -- The following code must appear in the VHDL architecture
@@ -107,7 +105,6 @@ your_instance_name : clk_wiz_0
    clk_out3 => clk_out3,
    clk_out4 => clk_out4,
    clk_out5 => clk_out5,
-   clk_out6 => clk_out6,
-   clk_out7 => clk_out7              
+   clk_out6 => clk_out6              
  );
 -- INST_TAG_END ------ End INSTANTIATION Template ------------

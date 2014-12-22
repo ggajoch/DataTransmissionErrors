@@ -143,3 +143,8 @@ set_property PACKAGE_PIN G13 [get_ports usart_out_clock]
 set_property PACKAGE_PIN C17 [get_ports usart_out_data]
 
 set_property PACKAGE_PIN P15 [get_ports usart_in_clock]
+
+set_property SLEW FAST [get_ports out_clock]
+set_property SLEW FAST [get_ports uart_out]
+set_property SLEW FAST [get_ports usart_out_clock]
+set_property SLEW FAST [get_ports usart_out_data]

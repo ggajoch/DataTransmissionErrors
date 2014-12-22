@@ -1,7 +1,7 @@
 -- Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2014.4 (win64) Build 1071353 Tue Nov 18 18:29:27 MST 2014
--- Date        : Sun Dec 21 19:45:49 2014
+-- Date        : Mon Dec 22 01:30:02 2014
 -- Host        : RAMEND running 64-bit Service Pack 1  (build 7601)
 -- Command     : write_vhdl -force -mode funcsim
 --               G:/repos/DataTransmissionErrors/DataTransmissionErrors/vivado/test1.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0_funcsim.vhdl
@@ -22,8 +22,7 @@ entity clk_wiz_0_clk_wiz_0_clk_wiz is
     clk_out3 : out STD_LOGIC;
     clk_out4 : out STD_LOGIC;
     clk_out5 : out STD_LOGIC;
-    clk_out6 : out STD_LOGIC;
-    clk_out7 : out STD_LOGIC
+    clk_out6 : out STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of clk_wiz_0_clk_wiz_0_clk_wiz : entity is "clk_wiz_0_clk_wiz";
@@ -37,7 +36,6 @@ architecture STRUCTURE of clk_wiz_0_clk_wiz_0_clk_wiz is
   signal clk_out4_clk_wiz_0 : STD_LOGIC;
   signal clk_out5_clk_wiz_0 : STD_LOGIC;
   signal clk_out6_clk_wiz_0 : STD_LOGIC;
-  signal clk_out7_clk_wiz_0 : STD_LOGIC;
   signal clkfbout_clk_wiz_0 : STD_LOGIC;
   signal NLW_mmcm_adv_inst_CLKFBOUTB_UNCONNECTED : STD_LOGIC;
   signal NLW_mmcm_adv_inst_CLKFBSTOPPED_UNCONNECTED : STD_LOGIC;
@@ -46,6 +44,7 @@ architecture STRUCTURE of clk_wiz_0_clk_wiz_0_clk_wiz is
   signal NLW_mmcm_adv_inst_CLKOUT1B_UNCONNECTED : STD_LOGIC;
   signal NLW_mmcm_adv_inst_CLKOUT2B_UNCONNECTED : STD_LOGIC;
   signal NLW_mmcm_adv_inst_CLKOUT3B_UNCONNECTED : STD_LOGIC;
+  signal NLW_mmcm_adv_inst_CLKOUT6_UNCONNECTED : STD_LOGIC;
   signal NLW_mmcm_adv_inst_DRDY_UNCONNECTED : STD_LOGIC;
   signal NLW_mmcm_adv_inst_LOCKED_UNCONNECTED : STD_LOGIC;
   signal NLW_mmcm_adv_inst_PSDONE_UNCONNECTED : STD_LOGIC;
@@ -64,7 +63,6 @@ architecture STRUCTURE of clk_wiz_0_clk_wiz_0_clk_wiz is
   attribute box_type of clkout4_buf : label is "PRIMITIVE";
   attribute box_type of clkout5_buf : label is "PRIMITIVE";
   attribute box_type of clkout6_buf : label is "PRIMITIVE";
-  attribute box_type of clkout7_buf : label is "PRIMITIVE";
   attribute box_type of mmcm_adv_inst : label is "PRIMITIVE";
 begin
 clkin1_ibufg: unisim.vcomponents.IBUF
@@ -105,50 +103,45 @@ clkout6_buf: unisim.vcomponents.BUFG
       I => clk_out6_clk_wiz_0,
       O => clk_out6
     );
-clkout7_buf: unisim.vcomponents.BUFG
-    port map (
-      I => clk_out7_clk_wiz_0,
-      O => clk_out7
-    );
 mmcm_adv_inst: unisim.vcomponents.MMCME2_ADV
     generic map(
       BANDWIDTH => "OPTIMIZED",
-      CLKFBOUT_MULT_F => 40.000000,
+      CLKFBOUT_MULT_F => 62.875000,
       CLKFBOUT_PHASE => 0.000000,
       CLKFBOUT_USE_FINE_PS => false,
       CLKIN1_PERIOD => 10.000000,
       CLKIN2_PERIOD => 0.000000,
-      CLKOUT0_DIVIDE_F => 7.000000,
+      CLKOUT0_DIVIDE_F => 5.375000,
       CLKOUT0_DUTY_CYCLE => 0.500000,
       CLKOUT0_PHASE => 0.000000,
       CLKOUT0_USE_FINE_PS => false,
-      CLKOUT1_DIVIDE => 9,
+      CLKOUT1_DIVIDE => 6,
       CLKOUT1_DUTY_CYCLE => 0.500000,
       CLKOUT1_PHASE => 0.000000,
       CLKOUT1_USE_FINE_PS => false,
-      CLKOUT2_DIVIDE => 11,
+      CLKOUT2_DIVIDE => 7,
       CLKOUT2_DUTY_CYCLE => 0.500000,
       CLKOUT2_PHASE => 0.000000,
       CLKOUT2_USE_FINE_PS => false,
-      CLKOUT3_DIVIDE => 12,
+      CLKOUT3_DIVIDE => 8,
       CLKOUT3_DUTY_CYCLE => 0.500000,
       CLKOUT3_PHASE => 0.000000,
       CLKOUT3_USE_FINE_PS => false,
       CLKOUT4_CASCADE => false,
-      CLKOUT4_DIVIDE => 15,
+      CLKOUT4_DIVIDE => 5,
       CLKOUT4_DUTY_CYCLE => 0.500000,
       CLKOUT4_PHASE => 0.000000,
       CLKOUT4_USE_FINE_PS => false,
-      CLKOUT5_DIVIDE => 17,
+      CLKOUT5_DIVIDE => 9,
       CLKOUT5_DUTY_CYCLE => 0.500000,
       CLKOUT5_PHASE => 0.000000,
       CLKOUT5_USE_FINE_PS => false,
-      CLKOUT6_DIVIDE => 19,
+      CLKOUT6_DIVIDE => 1,
       CLKOUT6_DUTY_CYCLE => 0.500000,
       CLKOUT6_PHASE => 0.000000,
       CLKOUT6_USE_FINE_PS => false,
       COMPENSATION => "INTERNAL",
-      DIVCLK_DIVIDE => 3,
+      DIVCLK_DIVIDE => 6,
       IS_CLKINSEL_INVERTED => '0',
       IS_PSEN_INVERTED => '0',
       IS_PSINCDEC_INVERTED => '0',
@@ -180,7 +173,7 @@ mmcm_adv_inst: unisim.vcomponents.MMCME2_ADV
       CLKOUT3B => NLW_mmcm_adv_inst_CLKOUT3B_UNCONNECTED,
       CLKOUT4 => clk_out5_clk_wiz_0,
       CLKOUT5 => clk_out6_clk_wiz_0,
-      CLKOUT6 => clk_out7_clk_wiz_0,
+      CLKOUT6 => NLW_mmcm_adv_inst_CLKOUT6_UNCONNECTED,
       DADDR(6) => '0',
       DADDR(5) => '0',
       DADDR(4) => '0',
@@ -230,13 +223,12 @@ entity clk_wiz_0 is
     clk_out3 : out STD_LOGIC;
     clk_out4 : out STD_LOGIC;
     clk_out5 : out STD_LOGIC;
-    clk_out6 : out STD_LOGIC;
-    clk_out7 : out STD_LOGIC
+    clk_out6 : out STD_LOGIC
   );
   attribute NotValidForBitStream : boolean;
   attribute NotValidForBitStream of clk_wiz_0 : entity is true;
   attribute core_generation_info : string;
-  attribute core_generation_info of clk_wiz_0 : entity is "clk_wiz_0,clk_wiz_v5_1,{component_name=clk_wiz_0,use_phase_alignment=false,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=MMCM,num_out_clk=7,clkin1_period=10.0,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=false,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}";
+  attribute core_generation_info of clk_wiz_0 : entity is "clk_wiz_0,clk_wiz_v5_1,{component_name=clk_wiz_0,use_phase_alignment=false,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=MMCM,num_out_clk=6,clkin1_period=10.0,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=false,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}";
 end clk_wiz_0;
 
 architecture STRUCTURE of clk_wiz_0 is
@@ -249,7 +241,6 @@ U0: entity work.clk_wiz_0_clk_wiz_0_clk_wiz
       clk_out3 => clk_out3,
       clk_out4 => clk_out4,
       clk_out5 => clk_out5,
-      clk_out6 => clk_out6,
-      clk_out7 => clk_out7
+      clk_out6 => clk_out6
     );
 end STRUCTURE;

@@ -1,7 +1,7 @@
 -- Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2014.4 (win64) Build 1071353 Tue Nov 18 18:29:27 MST 2014
--- Date        : Sun Dec 21 19:45:48 2014
+-- Date        : Mon Dec 22 01:30:02 2014
 -- Host        : RAMEND running 64-bit Service Pack 1  (build 7601)
 -- Command     : write_vhdl -force -mode synth_stub
 --               G:/repos/DataTransmissionErrors/DataTransmissionErrors/vivado/test1.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0_stub.vhdl
@@ -20,8 +20,7 @@ entity clk_wiz_0 is
     clk_out3 : out STD_LOGIC;
     clk_out4 : out STD_LOGIC;
     clk_out5 : out STD_LOGIC;
-    clk_out6 : out STD_LOGIC;
-    clk_out7 : out STD_LOGIC
+    clk_out6 : out STD_LOGIC
   );
 
 end clk_wiz_0;
@@ -30,6 +29,6 @@ architecture stub of clk_wiz_0 is
 attribute syn_black_box : boolean;
 attribute black_box_pad_pin : string;
 attribute syn_black_box of stub : architecture is true;
-attribute black_box_pad_pin of stub : architecture is "clk_in1,clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6,clk_out7";
+attribute black_box_pad_pin of stub : architecture is "clk_in1,clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6";
 begin
 end;

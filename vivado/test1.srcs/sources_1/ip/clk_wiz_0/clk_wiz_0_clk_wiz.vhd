@@ -55,13 +55,12 @@
 --  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 --   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 ------------------------------------------------------------------------------
--- CLK_OUT1___190.476______0.000______50.0______129.709____165.732
--- CLK_OUT2___148.148______0.000______50.0______134.617____165.732
--- CLK_OUT3___121.212______0.000______50.0______138.685____165.732
--- CLK_OUT4___111.111______0.000______50.0______140.491____165.732
--- CLK_OUT5____88.889______0.000______50.0______145.244____165.732
--- CLK_OUT6____78.431______0.000______50.0______147.987____165.732
--- CLK_OUT7____70.175______0.000______50.0______150.473____165.732
+-- CLK_OUT1___194.961______0.000______50.0______234.074____403.233
+-- CLK_OUT2___174.653______0.000______50.0______237.555____403.233
+-- CLK_OUT3___149.702______0.000______50.0______242.526____403.233
+-- CLK_OUT4___130.990______0.000______50.0______246.924____403.233
+-- CLK_OUT5___209.583______0.000______50.0______231.817____403.233
+-- CLK_OUT6___116.435______0.000______50.0______250.875____403.233
 --
 ------------------------------------------------------------------------------
 -- Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -87,8 +86,7 @@ port
   clk_out3          : out    std_logic;
   clk_out4          : out    std_logic;
   clk_out5          : out    std_logic;
-  clk_out6          : out    std_logic;
-  clk_out7          : out    std_logic
+  clk_out6          : out    std_logic
  );
 end clk_wiz_0_clk_wiz;
 
@@ -108,7 +106,7 @@ architecture xilinx of clk_wiz_0_clk_wiz is
   signal clkout3b_unused  : std_logic;
   signal clk_out5_clk_wiz_0          : std_logic;
   signal clk_out6_clk_wiz_0          : std_logic;
-  signal clk_out7_clk_wiz_0          : std_logic;
+  signal clkout6_unused   : std_logic;
   -- Dynamic programming unused signals
   signal do_unused        : std_logic_vector(15 downto 0);
   signal drdy_unused      : std_logic;
@@ -142,38 +140,34 @@ begin
     CLKOUT4_CASCADE      => FALSE,
     COMPENSATION         => "ZHOLD",
     STARTUP_WAIT         => FALSE,
-    DIVCLK_DIVIDE        => 3,
-    CLKFBOUT_MULT_F      => 40.000,
+    DIVCLK_DIVIDE        => 6,
+    CLKFBOUT_MULT_F      => 62.875,
     CLKFBOUT_PHASE       => 0.000,
     CLKFBOUT_USE_FINE_PS => FALSE,
-    CLKOUT0_DIVIDE_F     => 7.000,
+    CLKOUT0_DIVIDE_F     => 5.375,
     CLKOUT0_PHASE        => 0.000,
     CLKOUT0_DUTY_CYCLE   => 0.500,
     CLKOUT0_USE_FINE_PS  => FALSE,
-    CLKOUT1_DIVIDE       => 9,
+    CLKOUT1_DIVIDE       => 6,
     CLKOUT1_PHASE        => 0.000,
     CLKOUT1_DUTY_CYCLE   => 0.500,
     CLKOUT1_USE_FINE_PS  => FALSE,
-    CLKOUT2_DIVIDE       => 11,
+    CLKOUT2_DIVIDE       => 7,
     CLKOUT2_PHASE        => 0.000,
     CLKOUT2_DUTY_CYCLE   => 0.500,
     CLKOUT2_USE_FINE_PS  => FALSE,
-    CLKOUT3_DIVIDE       => 12,
+    CLKOUT3_DIVIDE       => 8,
     CLKOUT3_PHASE        => 0.000,
     CLKOUT3_DUTY_CYCLE   => 0.500,
     CLKOUT3_USE_FINE_PS  => FALSE,
-    CLKOUT4_DIVIDE       => 15,
+    CLKOUT4_DIVIDE       => 5,
     CLKOUT4_PHASE        => 0.000,
     CLKOUT4_DUTY_CYCLE   => 0.500,
     CLKOUT4_USE_FINE_PS  => FALSE,
-    CLKOUT5_DIVIDE       => 17,
+    CLKOUT5_DIVIDE       => 9,
     CLKOUT5_PHASE        => 0.000,
     CLKOUT5_DUTY_CYCLE   => 0.500,
     CLKOUT5_USE_FINE_PS  => FALSE,
-    CLKOUT6_DIVIDE       => 19,
-    CLKOUT6_PHASE        => 0.000,
-    CLKOUT6_DUTY_CYCLE   => 0.500,
-    CLKOUT6_USE_FINE_PS  => FALSE,
     CLKIN1_PERIOD        => 10.0)
   port map
     -- Output clocks
@@ -190,7 +184,7 @@ begin
     CLKOUT3B            => clkout3b_unused,
     CLKOUT4             => clk_out5_clk_wiz_0,
     CLKOUT5             => clk_out6_clk_wiz_0,
-    CLKOUT6             => clk_out7_clk_wiz_0,
+    CLKOUT6             => clkout6_unused,
     -- Input clock control
     CLKFBIN             => clkfbout_clk_wiz_0,
     CLKIN1              => clk_in1_clk_wiz_0,
@@ -254,10 +248,5 @@ begin
   port map
    (O   => clk_out6,
     I   => clk_out6_clk_wiz_0);
-
-  clkout7_buf : BUFG
-  port map
-   (O   => clk_out7,
-    I   => clk_out7_clk_wiz_0);
 
 end xilinx;

@@ -55,13 +55,12 @@
 --  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 --   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 ------------------------------------------------------------------------------
--- CLK_OUT1___190.476______0.000______50.0______129.709____165.732
--- CLK_OUT2___148.148______0.000______50.0______134.617____165.732
--- CLK_OUT3___121.212______0.000______50.0______138.685____165.732
--- CLK_OUT4___111.111______0.000______50.0______140.491____165.732
--- CLK_OUT5____88.889______0.000______50.0______145.244____165.732
--- CLK_OUT6____78.431______0.000______50.0______147.987____165.732
--- CLK_OUT7____70.175______0.000______50.0______150.473____165.732
+-- CLK_OUT1___194.961______0.000______50.0______234.074____403.233
+-- CLK_OUT2___174.653______0.000______50.0______237.555____403.233
+-- CLK_OUT3___149.702______0.000______50.0______242.526____403.233
+-- CLK_OUT4___130.990______0.000______50.0______246.924____403.233
+-- CLK_OUT5___209.583______0.000______50.0______231.817____403.233
+-- CLK_OUT6___116.435______0.000______50.0______250.875____403.233
 --
 ------------------------------------------------------------------------------
 -- Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -87,14 +86,13 @@ port
   clk_out3          : out    std_logic;
   clk_out4          : out    std_logic;
   clk_out5          : out    std_logic;
-  clk_out6          : out    std_logic;
-  clk_out7          : out    std_logic
+  clk_out6          : out    std_logic
  );
 end clk_wiz_0;
 
 architecture xilinx of clk_wiz_0 is
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of xilinx : architecture is "clk_wiz_0,clk_wiz_v5_1,{component_name=clk_wiz_0,use_phase_alignment=false,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=MMCM,num_out_clk=7,clkin1_period=10.0,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=false,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}";
+  attribute CORE_GENERATION_INFO of xilinx : architecture is "clk_wiz_0,clk_wiz_v5_1,{component_name=clk_wiz_0,use_phase_alignment=false,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=MMCM,num_out_clk=6,clkin1_period=10.0,clkin2_period=10.0,use_power_down=false,use_reset=false,use_locked=false,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}";
 
 component clk_wiz_0_clk_wiz
 port
@@ -106,8 +104,7 @@ port
   clk_out3          : out    std_logic;
   clk_out4          : out    std_logic;
   clk_out5          : out    std_logic;
-  clk_out6          : out    std_logic;
-  clk_out7          : out    std_logic
+  clk_out6          : out    std_logic
  );
 end component;
 
@@ -124,8 +121,7 @@ begin
    clk_out3 => clk_out3,
    clk_out4 => clk_out4,
    clk_out5 => clk_out5,
-   clk_out6 => clk_out6,
-   clk_out7 => clk_out7              
+   clk_out6 => clk_out6              
  );
 
 end xilinx;
