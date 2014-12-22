@@ -54,7 +54,12 @@ signal speed_exponent : integer range 0 to 9;
 signal usart_out : std_logic;
 signal usart_out_clock_SIG : std_logic;
 signal usart_TC : std_logic;
+signal uart_prescaler_reset : std_logic;
+signal clock_prescaled_TX : std_logic;
 
+signal fast_TX : std_logic;
+signal fast_RX : std_logic;
+signal uart_trigger : std_logic;
 begin
 	
 	display_inst : entity work.displayController
@@ -74,61 +79,73 @@ begin
 	out_clock <= clock_prescaled;
 
 
-	SevenSegControl_inst : entity work.SevenSegControl
-		port map(input => actual_string,
-				 input_dots => actual_dots,
-			     digits => digits,
-			     segments => segments,
-			     segment_change_clock => clock_1kHz);
-
 	--------------- CLOCK GENERATION ------------------------
 
+	usart_out_clock <= clock_prescaled_TX;
+	
+	clock_gen_TX_inst : entity work.clockController
+		port map(speed_integer => speed_integer,
+			     speed_exp     => speed_exponent,
+			     clock_100MHz  => clock_100MHz,
+			     clock_out     => clock_prescaled_TX,
+			     reset_presc   => '0',
+			     fast_clock    => fast_TX);
 
-	clock_gen_inst : entity work.clockController
+	clock_gen_RX_inst : entity work.clockController
 		port map(speed_integer => speed_integer,
 			     speed_exp     => speed_exponent,
 			     clock_100MHz  => clock_100MHz,
 			     clock_out     => clock_prescaled,
-			     reset_presc   => '0');
+			     reset_presc   => uart_prescaler_reset,
+			     fast_clock    => fast_RX);
+
 
 
 	--------------- UART ------------------------------------
 
 	uart_inst : entity work.UART_Tx	
 		port map(TxPin    => uart_out,
-			     TxClock  => clock_prescaled,
-			     Data     => uart_data,
-			     DataFlag => clock_10Hz,
+			     TxClock  => clock_prescaled_TX,
+			     Data     => switchesRaw(7 downto 0),--uart_data,
+			     DataFlag => uart_trigger,
 			     TC       => uart_TC);
 
-	uart_proc : process(clock_10Hz) is
-	begin
-		if( rising_edge(clock_10Hz) ) then
-			uart_data <= std_logic_vector(unsigned(uart_data)+1);
-		end if;
-	end process uart_proc;
-	
+	clock_trig : entity work.prescaler
+		generic map(max_presc => 21)
+		port map(clk_input  => clock_prescaled_TX,
+			     clk_output => uart_trigger,
+			     reset      => '0',
+			     presc      => 20);
+			     
+	uart_recv : entity work.UART_Rx
+		port map(RxPin                => usart_in_data,
+			     fast_clock           => fast_TX,
+			     sampling_clock       => clock_prescaled,
+			     sampling_clock_reset => uart_prescaler_reset,
+			     Data                 => LED(7 downto 0),
+			     DataFlag             => LED(8),
+			     TransmissionError    => LED(9));
 	
 	--------------- USART ------------------------------------
 	
-	usartTX_inst : entity work.USART_Tx
-		port map(TxPin      => usart_out,
-			     TxSynchPin => usart_out_clock_SIG,
-			     TxClock    => clock_prescaled,
-			     Data       => uart_data,
-			     DataFlag   => clock_10Hz,
-			     TC         => usart_TC); 
-	
-	usart_out_clock <= usart_out_clock_SIG;
-	usart_out_data <= usart_out;
-	
-	
-	usartRX_inst : entity work.USART_Rx
-		port map(RxPin             => usart_in_data,
-			     RxSynchPin        => usart_in_clock,
-			     Data              => LED(7 downto 0),
-			     DataFlag          => LED(8),
-			     TransmissionError => LED(9));
+--	usartTX_inst : entity work.USART_Tx
+--		port map(TxPin      => usart_out,
+--			     TxSynchPin => usart_out_clock_SIG,
+--			     TxClock    => clock_prescaled,
+--			     Data       => uart_data,
+--			     DataFlag   => clock_10Hz,
+--			     TC         => usart_TC); 
+--	
+--	usart_out_clock <= usart_out_clock_SIG;
+--	usart_out_data <= usart_out;
+--	
+--	
+--	usartRX_inst : entity work.USART_Rx
+--		port map(RxPin             => usart_in_data,
+--			     RxSynchPin        => usart_in_clock,
+--			     Data              => LED(7 downto 0),
+--			     DataFlag          => LED(8),
+--			     TransmissionError => LED(9));
 		
 --------------- DEBOUNCING ------------------------------------
 			     
