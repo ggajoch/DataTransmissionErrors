@@ -82,13 +82,14 @@ begin
 				when Speed =>
 					sci_controller_enable <= '1';
 					actual_dots <= "0000" & sci_controller_dots;
-					actual_string <= "0000" & sci_controller_string;
+					actual_string <= "----" & sci_controller_string;
 					if( middle_pressed ) then
 						sci_controller_enable <= '0';
 						State := WelcomeProtocol;
 					end if;
 				when Protocol =>
 					actual_string <= protocol_string;
+					actual_dots <= protocol_dots; 
 					protocol_enable <= '1';
 					if( middle_pressed ) then
 						protocol_enable <= '0';
