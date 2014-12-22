@@ -24,7 +24,7 @@ begin
 		variable state : std_logic := '0';
 	begin
 		if( reset = '1' ) then
-			cnt := 0;
+			cnt := 1;
 			state := '0';
 		elsif( rising_edge(clk_input) ) then
 			if( state = '0' and cnt >= timeLow ) then
