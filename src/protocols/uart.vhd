@@ -59,17 +59,22 @@ entity UART_Rx is
 		  sampling_clock_reset : out std_logic;
 		  Data : out std_logic_vector(7 downto 0);
 		  DataFlag : out std_logic;
-		  TransmissionError : out std_logic
+		  TransmissionError : out std_logic;
+		  out_debug : out std_logic_vector(7 downto 0)
 		);
 end UART_Rx;
 
 architecture RTL of UART_Rx is
 	type State_t is (Idle, ResetOff, WaitForDataFlag);
+	type State_Recv_t is (Idle, Receive, SetFlag, ClearFlag);
 	signal State_SamplingOut : State_t;
 	signal DataFlag_sig : std_logic;
 	signal timeout_wait : std_logic;
 	signal timeout_occured : std_logic;
+	signal reset_recv : std_logic;
 begin
+	
+	
 	
 	process(fast_clock) is
 		variable last_in : std_logic;
@@ -79,25 +84,32 @@ begin
 			
 			sampling_clock_reset <= '0';
 			case State is 
-				when Idle =>
+			when Idle =>
+					reset_recv <= '1';
+					timeout_wait <= '1';
+					out_debug(1 downto 0) <= "00";
 					if( last_in = '1' and RxPin = '0' ) then
 						sampling_clock_reset <= '1';
 						timeout_wait <= '1';
 						State := ResetOff;
 					end if;
 				when ResetOff =>
-					timeout_wait <= '0';
+					reset_recv <= '0';
+					timeout_wait <= '1';
+					out_debug(1 downto 0) <= "01";
 					sampling_clock_reset <= '0';
 					State := WaitForDataFlag;
 				when WaitForDataFlag =>
+					out_debug(1 downto 0) <= "11";
 					timeout_wait <= '0';					
-					if( DataFlag_sig = '1' ) then
-						State := Idle;
-					end if;
+--					if( DataFlag_sig = '1' ) then
+--						State := Idle;
+--					end if;
 					if( timeout_occured = '1' ) then
 						State := Idle;
 					end if;
 			end case;
+			
 			last_in := RxPin;
 			State_SamplingOut <= State;
 		end if;
@@ -122,10 +134,53 @@ begin
 	
 	DataFlag <= DataFlag_sig;
 	
-	usart_recv: entity work.USART_Rx
-		port map(RxPin             => RxPin,
-			     RxSynchPin        => sampling_clock,
-			     Data              => Data,
-			     DataFlag          => DataFlag_sig,
-			     TransmissionError => TransmissionError);
+	process(sampling_clock, reset_recv) is
+		variable DataRecv : std_logic_vector(9 downto 0);
+		variable BitsLeft : natural := 0;
+		variable State : State_Recv_t := Idle;
+		variable last_input : std_logic;
+		variable dbg_tmp : std_logic := '0';
+	begin
+		if( reset_recv = '1' ) then
+			State := Receive;
+			BitsLeft := 9;
+		elsif( rising_edge(sampling_clock) ) then
+			case State is
+				when Idle =>
+					null;
+				when Receive =>
+					dbg_tmp := not dbg_tmp;
+					out_debug(2) <= dbg_tmp;
+					DataRecv(BitsLeft) := RxPin;
+					
+					if( BitsLeft > 0 ) then
+						if( BitsLeft < 9 ) then
+							Data(BitsLeft-1) <= RxPin;
+						end if;
+						BitsLeft := BitsLeft - 1;
+					else --all data received
+						if DataRecv(9) /= '0' or DataRecv(0) /= '1' then
+							TransmissionError <= '1';
+						end if;
+						--Data <= DataRecv(8 downto 1);
+						State := SetFlag;
+					end if;
+				when SetFlag =>
+					DataFlag_sig <= '1';
+					State := ClearFlag;
+				when ClearFlag =>
+					TransmissionError <= '0';
+					DataFlag_sig <= '0';
+					State  := Idle;
+			end case;
+			last_input := RxPin;
+		end if;
+	end process;
+	
+--	usart_recv: entity work.USART_Rx
+--		port map(RxPin             => RxPin,
+--			     RxSynchPin        => sampling_clock,
+--			     Data              => Data,
+--			     DataFlag          => DataFlag_sig,
+--			     TransmissionError => TransmissionError);
 end;
