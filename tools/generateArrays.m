@@ -4,7 +4,7 @@ format shortEng;
 
 available = [194.961 174.653 149.702 130.99 209.583 116.435];
 available = available*1e6;
-available = [ available available/1e2 available/1e4];
+%available = [ available available/1e2 available/1e4];
 available = sort(available,'descend')
 available = available
 freq = [];
