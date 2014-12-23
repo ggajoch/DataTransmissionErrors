@@ -90,11 +90,11 @@ begin
 			     reset_presc   => '0');
 
 	trigger_gen_inst : entity work.prescaler
-		generic map(max_presc => 20)
+		generic map(max_presc => 30)
 		port map(clk_input  => clock_prescaled,
 			     clk_output => data_trigger,
 			     reset      => '0',
-			     presc      => 20);
+			     presc      => 30);
 
 
 	--------------- DATA GENERATION ---------------------------
@@ -104,7 +104,7 @@ begin
 	
 	--------------- USER INPUTS -------------------------------
 	
-	process(protocol_sel) is
+	process(protocol_sel, uart_out, usart_out_clock, usart_out_data) is
 	begin
 		case protocol_sel is
 			when 0 =>
