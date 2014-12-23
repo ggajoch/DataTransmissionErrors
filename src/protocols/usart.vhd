@@ -86,13 +86,15 @@ begin
 					end if;
 				when Receive =>
 					DataRecv(BitsLeft) := RxPin;
+					
 					if( BitsLeft > 0 ) then
+						Data(BitsLeft-1) <= RxPin;
 						BitsLeft := BitsLeft - 1;
 					else --all data received
 						if DataRecv(9) /= '0' or DataRecv(0) /= '1' then
 							TransmissionError <= '1';
 						end if;
-						Data <= DataRecv(8 downto 1);
+						--Data <= DataRecv(8 downto 1);
 						State := SetFlag;
 					end if;
 				when SetFlag =>
