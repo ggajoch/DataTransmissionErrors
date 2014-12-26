@@ -2,11 +2,14 @@ clear all; clc;
 format shortEng;
 
 
-available = [194.961 174.653 149.702 130.99 209.583 116.435];
+available = [109.936 119.097 129.924...
+                  142.917 158.796 178.646...
+                  150.000 168.750 192.857...
+                  184.906 136.111 100];
 available = available*1e6;
 %available = [ available available/1e2 available/1e4];
 available = sort(available,'descend')
-available = available
+%available = available
 freq = [];
 
 for i=10:99
