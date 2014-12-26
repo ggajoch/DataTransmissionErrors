@@ -1,4 +1,4 @@
--- file: clk_wiz_0_clk_wiz.vhd
+-- file: clk_wiz_1_clk_wiz.vhd
 -- 
 -- (c) Copyright 2008 - 2013 Xilinx, Inc. All rights reserved.
 -- 
@@ -55,12 +55,9 @@
 --  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 --   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 ------------------------------------------------------------------------------
--- CLK_OUT1___109.936______0.000______50.0______129.475____157.116
--- CLK_OUT2___119.097______0.000______50.0______127.984____157.116
--- CLK_OUT3___129.924______0.000______50.0______126.384____157.116
--- CLK_OUT4___142.917______0.000______50.0______124.658____157.116
--- CLK_OUT5___158.796______0.000______50.0______122.780____157.116
--- CLK_OUT6___178.646______0.000______50.0______120.720____157.116
+-- CLK_OUT1___150.000______0.000______50.0_______98.450_____80.549
+-- CLK_OUT2___168.750______0.000______50.0_______96.381_____80.549
+-- CLK_OUT3___192.857______0.000______50.0_______94.093_____80.549
 --
 ------------------------------------------------------------------------------
 -- Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -76,36 +73,33 @@ use ieee.numeric_std.all;
 library unisim;
 use unisim.vcomponents.all;
 
-entity clk_wiz_0_clk_wiz is
+entity clk_wiz_1_clk_wiz is
 port
  (-- Clock in ports
   clk_in1           : in     std_logic;
   -- Clock out ports
   clk_out1          : out    std_logic;
   clk_out2          : out    std_logic;
-  clk_out3          : out    std_logic;
-  clk_out4          : out    std_logic;
-  clk_out5          : out    std_logic;
-  clk_out6          : out    std_logic
+  clk_out3          : out    std_logic
  );
-end clk_wiz_0_clk_wiz;
+end clk_wiz_1_clk_wiz;
 
-architecture xilinx of clk_wiz_0_clk_wiz is
+architecture xilinx of clk_wiz_1_clk_wiz is
   -- Input clock buffering / unused connectors
-  signal clk_in1_clk_wiz_0      : std_logic;
+  signal clk_in1_clk_wiz_1      : std_logic;
   -- Output clock buffering / unused connectors
-  signal clkfbout_clk_wiz_0         : std_logic;
+  signal clkfbout_clk_wiz_1         : std_logic;
   signal clkfboutb_unused : std_logic;
-  signal clk_out1_clk_wiz_0          : std_logic;
+  signal clk_out1_clk_wiz_1          : std_logic;
   signal clkout0b_unused         : std_logic;
-  signal clk_out2_clk_wiz_0          : std_logic;
+  signal clk_out2_clk_wiz_1          : std_logic;
   signal clkout1b_unused         : std_logic;
-  signal clk_out3_clk_wiz_0          : std_logic;
+  signal clk_out3_clk_wiz_1          : std_logic;
   signal clkout2b_unused         : std_logic;
-  signal clk_out4_clk_wiz_0          : std_logic;
+  signal clkout3_unused   : std_logic;
   signal clkout3b_unused  : std_logic;
-  signal clk_out5_clk_wiz_0          : std_logic;
-  signal clk_out6_clk_wiz_0          : std_logic;
+  signal clkout4_unused   : std_logic;
+  signal clkout5_unused   : std_logic;
   signal clkout6_unused   : std_logic;
   -- Dynamic programming unused signals
   signal do_unused        : std_logic_vector(15 downto 0);
@@ -124,7 +118,7 @@ begin
   --------------------------------------
   clkin1_ibufg : IBUF
   port map
-   (O => clk_in1_clk_wiz_0,
+   (O => clk_in1_clk_wiz_1,
     I => clk_in1);
 
 
@@ -140,54 +134,42 @@ begin
     CLKOUT4_CASCADE      => FALSE,
     COMPENSATION         => "ZHOLD",
     STARTUP_WAIT         => FALSE,
-    DIVCLK_DIVIDE        => 3,
-    CLKFBOUT_MULT_F      => 42.875,
+    DIVCLK_DIVIDE        => 1,
+    CLKFBOUT_MULT_F      => 13.500,
     CLKFBOUT_PHASE       => 0.000,
     CLKFBOUT_USE_FINE_PS => FALSE,
-    CLKOUT0_DIVIDE_F     => 13.000,
+    CLKOUT0_DIVIDE_F     => 9.000,
     CLKOUT0_PHASE        => 0.000,
     CLKOUT0_DUTY_CYCLE   => 0.500,
     CLKOUT0_USE_FINE_PS  => FALSE,
-    CLKOUT1_DIVIDE       => 12,
+    CLKOUT1_DIVIDE       => 8,
     CLKOUT1_PHASE        => 0.000,
     CLKOUT1_DUTY_CYCLE   => 0.500,
     CLKOUT1_USE_FINE_PS  => FALSE,
-    CLKOUT2_DIVIDE       => 11,
+    CLKOUT2_DIVIDE       => 7,
     CLKOUT2_PHASE        => 0.000,
     CLKOUT2_DUTY_CYCLE   => 0.500,
     CLKOUT2_USE_FINE_PS  => FALSE,
-    CLKOUT3_DIVIDE       => 10,
-    CLKOUT3_PHASE        => 0.000,
-    CLKOUT3_DUTY_CYCLE   => 0.500,
-    CLKOUT3_USE_FINE_PS  => FALSE,
-    CLKOUT4_DIVIDE       => 9,
-    CLKOUT4_PHASE        => 0.000,
-    CLKOUT4_DUTY_CYCLE   => 0.500,
-    CLKOUT4_USE_FINE_PS  => FALSE,
-    CLKOUT5_DIVIDE       => 8,
-    CLKOUT5_PHASE        => 0.000,
-    CLKOUT5_DUTY_CYCLE   => 0.500,
-    CLKOUT5_USE_FINE_PS  => FALSE,
     CLKIN1_PERIOD        => 10.0)
   port map
     -- Output clocks
    (
-    CLKFBOUT            => clkfbout_clk_wiz_0,
+    CLKFBOUT            => clkfbout_clk_wiz_1,
     CLKFBOUTB           => clkfboutb_unused,
-    CLKOUT0             => clk_out1_clk_wiz_0,
+    CLKOUT0             => clk_out1_clk_wiz_1,
     CLKOUT0B            => clkout0b_unused,
-    CLKOUT1             => clk_out2_clk_wiz_0,
+    CLKOUT1             => clk_out2_clk_wiz_1,
     CLKOUT1B            => clkout1b_unused,
-    CLKOUT2             => clk_out3_clk_wiz_0,
+    CLKOUT2             => clk_out3_clk_wiz_1,
     CLKOUT2B            => clkout2b_unused,
-    CLKOUT3             => clk_out4_clk_wiz_0,
+    CLKOUT3             => clkout3_unused,
     CLKOUT3B            => clkout3b_unused,
-    CLKOUT4             => clk_out5_clk_wiz_0,
-    CLKOUT5             => clk_out6_clk_wiz_0,
+    CLKOUT4             => clkout4_unused,
+    CLKOUT5             => clkout5_unused,
     CLKOUT6             => clkout6_unused,
     -- Input clock control
-    CLKFBIN             => clkfbout_clk_wiz_0,
-    CLKIN1              => clk_in1_clk_wiz_0,
+    CLKFBIN             => clkfbout_clk_wiz_1,
+    CLKIN1              => clk_in1_clk_wiz_1,
     CLKIN2              => '0',
     -- Tied to always select the primary input clock
     CLKINSEL            => '1',
@@ -220,33 +202,18 @@ begin
   clkout1_buf : BUFG
   port map
    (O   => clk_out1,
-    I   => clk_out1_clk_wiz_0);
+    I   => clk_out1_clk_wiz_1);
 
 
 
   clkout2_buf : BUFG
   port map
    (O   => clk_out2,
-    I   => clk_out2_clk_wiz_0);
+    I   => clk_out2_clk_wiz_1);
 
   clkout3_buf : BUFG
   port map
    (O   => clk_out3,
-    I   => clk_out3_clk_wiz_0);
-
-  clkout4_buf : BUFG
-  port map
-   (O   => clk_out4,
-    I   => clk_out4_clk_wiz_0);
-
-  clkout5_buf : BUFG
-  port map
-   (O   => clk_out5,
-    I   => clk_out5_clk_wiz_0);
-
-  clkout6_buf : BUFG
-  port map
-   (O   => clk_out6,
-    I   => clk_out6_clk_wiz_0);
+    I   => clk_out3_clk_wiz_1);
 
 end xilinx;

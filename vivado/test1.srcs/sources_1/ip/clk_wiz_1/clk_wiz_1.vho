@@ -54,12 +54,9 @@
 --  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 --   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 ------------------------------------------------------------------------------
--- CLK_OUT1___109.936______0.000______50.0______129.475____157.116
--- CLK_OUT2___119.097______0.000______50.0______127.984____157.116
--- CLK_OUT3___129.924______0.000______50.0______126.384____157.116
--- CLK_OUT4___142.917______0.000______50.0______124.658____157.116
--- CLK_OUT5___158.796______0.000______50.0______122.780____157.116
--- CLK_OUT6___178.646______0.000______50.0______120.720____157.116
+-- CLK_OUT1___150.000______0.000______50.0_______98.450_____80.549
+-- CLK_OUT2___168.750______0.000______50.0_______96.381_____80.549
+-- CLK_OUT3___192.857______0.000______50.0_______94.093_____80.549
 --
 ------------------------------------------------------------------------------
 -- Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -69,32 +66,29 @@
 
 -- The following code must appear in the VHDL architecture header:
 ------------- Begin Cut here for COMPONENT Declaration ------ COMP_TAG
-component clk_wiz_0
+component clk_wiz_1
 port
  (-- Clock in ports
   clk_in1           : in     std_logic;
   -- Clock out ports
   clk_out1          : out    std_logic;
   clk_out2          : out    std_logic;
-  clk_out3          : out    std_logic;
-  clk_out4          : out    std_logic;
-  clk_out5          : out    std_logic;
-  clk_out6          : out    std_logic
+  clk_out3          : out    std_logic
  );
 end component;
 
 ATTRIBUTE SYN_BLACK_BOX : BOOLEAN;
-ATTRIBUTE SYN_BLACK_BOX OF clk_wiz_0 : COMPONENT IS TRUE;
+ATTRIBUTE SYN_BLACK_BOX OF clk_wiz_1 : COMPONENT IS TRUE;
 
 
 ATTRIBUTE BLACK_BOX_PAD_PIN : STRING;
-ATTRIBUTE BLACK_BOX_PAD_PIN OF clk_wiz_0 : COMPONENT IS "clk_in1,clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6";
+ATTRIBUTE BLACK_BOX_PAD_PIN OF clk_wiz_1 : COMPONENT IS "clk_in1,clk_out1,clk_out2,clk_out3";
 
 -- COMP_TAG_END ------ End COMPONENT Declaration ------------
 -- The following code must appear in the VHDL architecture
 -- body. Substitute your own instance name and net names.
 ------------- Begin Cut here for INSTANTIATION Template ----- INST_TAG
-your_instance_name : clk_wiz_0
+your_instance_name : clk_wiz_1
    port map ( 
 
    -- Clock in ports
@@ -102,9 +96,6 @@ your_instance_name : clk_wiz_0
   -- Clock out ports  
    clk_out1 => clk_out1,
    clk_out2 => clk_out2,
-   clk_out3 => clk_out3,
-   clk_out4 => clk_out4,
-   clk_out5 => clk_out5,
-   clk_out6 => clk_out6              
+   clk_out3 => clk_out3              
  );
 -- INST_TAG_END ------ End INSTANTIATION Template ------------
