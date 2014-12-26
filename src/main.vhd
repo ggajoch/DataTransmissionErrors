@@ -2,6 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+Library UNISIM;
+use UNISIM.vcomponents.all;
+
 entity main is
 	port (
 		digits : out std_logic_vector(7 downto 0);
@@ -23,6 +26,15 @@ entity main is
 		usart_in_clock : in std_logic;
 		usart_in_data : in std_logic;
 		
+		diff_out_clock_p : out std_logic;
+		diff_out_clock_n : out std_logic;
+		diff_out_data_p : out std_logic;
+		diff_out_data_n : out std_logic;
+		diff_in_clock_p : in std_logic;
+		diff_in_clock_n : in std_logic;
+		diff_in_data_p : in std_logic;
+		diff_in_data_n : in std_logic;
+		
 		clock_100MHz : in std_logic;
 		
 		JC : out std_logic_vector(8 downto 1)
@@ -30,6 +42,14 @@ entity main is
 end entity main;
 	
 architecture RTL of main is
+	signal rcv_data_out : std_logic;
+	signal rcv_clock_out : std_logic;
+	
+	signal diff_out_clock : std_logic;
+	signal diff_out_data : std_logic;
+	signal diff_in_clock : std_logic;
+	signal diff_in_data : std_logic;
+	
 	signal clock_1MHz : std_logic;
 	signal clock_1kHz : std_logic;
 	signal clock_10Hz : std_logic;
@@ -62,6 +82,54 @@ architecture RTL of main is
 	
 	signal control_pin : std_logic;
 begin
+	
+	diff_out_data <= rcv_data_out;
+	usart_out_data <= rcv_data_out;
+	diff_out_clock <= rcv_clock_out;
+	usart_out_clock <= rcv_clock_out;
+	
+	OBUFDS_inst : OBUFDS
+		generic map (
+			IOSTANDARD => "LVCMOS33", -- Specify the output I/O standard
+			SLEW => "FAST")          -- Specify the output slew rate
+		port map (
+			O => diff_out_clock_p,     -- Diff_p output (connect directly to top-level port)
+			OB => diff_out_clock_n,   -- Diff_n output (connect directly to top-level port)
+			I => diff_out_clock      -- Buffer input 
+		);
+	
+	OBUFDS_inst2 : OBUFDS
+		generic map (
+			IOSTANDARD => "LVCMOS33", -- Specify the output I/O standard
+			SLEW => "FAST")          -- Specify the output slew rate
+		port map (
+			O => diff_out_data_p,     -- Diff_p output (connect directly to top-level port)
+			OB => diff_out_data_n,   -- Diff_n output (connect directly to top-level port)
+			I => diff_out_data      -- Buffer input
+		);
+		
+		
+	IBUFDS_inst : IBUFDS
+		generic map (
+			DIFF_TERM => TRUE, -- Differential Termination 
+			IBUF_LOW_PWR => FALSE, -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
+			IOSTANDARD => "LVCMOS33")
+		port map (
+			O => diff_in_clock,  -- Buffer output
+			I => diff_in_clock_p,  -- Diff_p buffer input (connect directly to top-level port)
+			IB => diff_in_clock_n -- Diff_n buffer input (connect directly to top-level port)
+		);
+	
+	IBUFDS_inst2 : IBUFDS
+		generic map (
+			DIFF_TERM => TRUE, -- Differential Termination 
+			IBUF_LOW_PWR => FALSE, -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
+			IOSTANDARD => "LVCMOS33")
+		port map (
+			O => diff_in_data,  -- Buffer output
+			I => diff_in_data_p,  -- Diff_p buffer input (connect directly to top-level port)
+			IB => diff_in_data_n -- Diff_n buffer input (connect directly to top-level port)
+		);
 	
 	control_pin <= switchesRaw(15);
 	
@@ -132,8 +200,8 @@ begin
 			     clock_1kHz   => clock_1kHz,
 			     clock_10Hz   => clock_10Hz,
 			     clock_1Hz    => clock_1Hz,
-			     output_data  => usart_out_data,
-			     output_clock => usart_out_clock,
+			     output_data  => rcv_data_out,
+			     output_clock => rcv_clock_out,
 			     output3      => out_clock);
 	
 --------------- RECEIVER --------------------------------------
