@@ -45,6 +45,7 @@ architecture RTL of Tx_MAIN is
 	
 	--------------- COMMON ------------------------------------
 	signal data_out : std_logic_vector(7 downto 0);
+	signal data_generator_out : std_logic_vector(7 downto 0);
 	
 	
 	--------------- UART --------------------------------------
@@ -63,7 +64,7 @@ begin
 	
 	--------------- DISPLAY CONTROL ---------------------------
 	
-	display_inst : entity work.displayController
+	display_inst : entity work.displayController_TX
 		port map(buttonMiddle                => buttonMiddle,
 			     buttonLeft                  => buttonLeft,
 			     buttonRight                 => buttonRight,
@@ -99,7 +100,13 @@ begin
 
 	--------------- DATA GENERATION ---------------------------
 	
-	data_out <= switchesRaw(7 downto 0);
+	data_generator : entity work.CodeGen
+		port map(clk    => clock_10Hz,
+			     packet => data_generator_out);
+	
+	data_out <= switchesRaw(7 downto 0) when switchesRaw(14) = '0' else
+				data_generator_out;
+			
 	
 	
 	--------------- USER INPUTS -------------------------------
