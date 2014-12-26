@@ -14,16 +14,12 @@ entity Rx_MAIN is
 		switchesRaw : in std_logic_vector(15 downto 0);
 		LED : out std_logic_vector(15 downto 0);
 		
-		
-		
 		clock_100MHz : in std_logic;
 		clock_1MHz : in std_logic;
 		clock_1kHz : in std_logic;
 		clock_10Hz : in std_logic;
 		clock_1Hz : in std_logic;
-		
-		
-		
+			
 		input_data : in std_logic;
 		input_clock : in std_logic;
 		input3 : in std_logic;
@@ -47,8 +43,18 @@ architecture RTL of Rx_MAIN is
 	
 	--------------- COMMON ------------------------------------
 	signal data_out : std_logic_vector(7 downto 0);
+	signal data_rcvd : std_logic_vector(7 downto 0);
+	signal data_latch : std_logic;
 	
+	--------------- ERROR -------------------------------------
+	signal errorDots : std_logic_vector(8 downto 1);
+	signal errorPercent : string(8 downto 1);
+	signal errorTrasmissionError : std_logic;
 	
+	signal displayPercent : string(8 downto 1);
+	signal displayWanted : string(8 downto 1);
+	signal displayGot : string(8 downto 1);
+		
 	--------------- UART --------------------------------------
 	
 	type uartData_t is record
@@ -81,11 +87,12 @@ architecture RTL of Rx_MAIN is
 	signal out_debug : std_logic_vector(7 downto 0);
 	
 	
+	
 begin
 	
 	--------------- DISPLAY CONTROL ---------------------------
 	
-	display_inst : entity work.displayController
+	display_inst : entity work.displayController_RX
 		port map(buttonMiddle                => buttonMiddle,
 			     buttonLeft                  => buttonLeft,
 			     buttonRight                 => buttonRight,
@@ -98,7 +105,10 @@ begin
 			     sci_controller_exponent_out => speed_exponent,
 			     digits 			 		 => digits,
 			     segments				 	 => segments,
-			     segment_mux_clock			 => clock_1kHz);
+			     segment_mux_clock			 => clock_1kHz,
+			     errorPercent				 => errorPercent,
+				 errorRcvd 					 => displayGot,
+				 errorWant					 => displayWanted);
 
 	
 
@@ -113,12 +123,11 @@ begin
 			     fast_clock	   => fast_clock);
 
 	trigger_gen_inst : entity work.prescaler
-		generic map(max_presc => 20)
+		generic map(max_presc => 30)
 		port map(clk_input  => clock_prescaled,
 			     clk_output => data_trigger,
 			     reset      => '0',
-			     presc      => 20);
-
+			     presc      => 30);
 
 	--------------- DATA GENERATION ---------------------------
 	
@@ -127,18 +136,46 @@ begin
 	
 	--------------- USER INPUTS -------------------------------
 	
+	LED(7 downto 0) <= data_rcvd;
+	
 	process(protocol_sel, uart_struct, usart_struct.data) is
 	begin
 		case protocol_sel is
 			when 0 =>
-				LED(7 downto 0) <= uart_struct.data;
+				data_rcvd <= uart_struct.data;
+				data_latch <= uart_struct.data_flag;
+				errorTrasmissionError <= uart_struct.transmission_error;
 			when 1 =>
-				LED(7 downto 0) <= usart_struct.data;
+				data_rcvd <= usart_struct.data;
+				data_latch <= usart_struct.data_flag;
+				errorTrasmissionError <= usart_struct.transmission_error;
 			when others =>
-				LED(7 downto 0) <= (others => '0');
+				data_rcvd <= (others => '0');
+				data_latch <= '0';
+				errorTrasmissionError <= '0';
 		end case;
 	end process;
 	
+	--------------- ERRORS ------------------------------------
+	
+	err_calc : entity work.ErrorsCalc
+		port map(displayPercent => errorPercent,
+				 displayWanted  => displayWanted,
+				 displayGot     => displayGot,
+			     displayDots    => errorDots,
+			     data           => data_rcvd,
+			     data_latch     => data_latch,
+			     data_transmissionError		=> errorTrasmissionError,
+			     tick           => data_trigger,
+			     clock_100MHz   => clock_100MHz,
+			     clock_1kHz     => clock_1kHz);
+	
+	errorDetector : entity work.CodeCheck
+		port map(packet => uart_struct.data,
+			     result => debug(7));
+	
+	debug(6) <= data_trigger;
+	debug(5) <= data_latch;
 	
 	--------------- UART --------------------------------------
 
@@ -157,8 +194,9 @@ begin
 			     TransmissionError    => uart_struct.transmission_error,
 			     out_debug			  => out_debug);
 
-	debug <= out_debug;
+	debug(4 downto 0) <= out_debug(4 downto 0);
 
+	
 	--------------- USART -------------------------------------
 	
 	usart_struct.in_pin_data <= input_data;
