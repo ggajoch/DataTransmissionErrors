@@ -72,7 +72,7 @@ signal StateOut : State_t;
 begin
 	process(RxSynchPin) is
 		variable DataRecv : std_logic_vector(9 downto 0);
-		variable BitsLeft : natural := 0;
+		variable BitsLeft : natural range 0 to 10 := 0;
 		variable State : State_t := Idle;
 		variable last_input : std_logic;
 	begin
