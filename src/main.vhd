@@ -62,6 +62,9 @@ architecture RTL of main is
 	signal buttonDown : std_logic;
 
 
+    signal usart_in_data_signal : std_logic;
+    signal usart_in_clock_signal : std_logic;
+
 	signal receiver_out_debug : std_logic_vector(7 downto 0);
 
 	type IO_to_device_t is record
@@ -88,32 +91,22 @@ begin
 	diff_out_clock <= rcv_clock_out;
 	usart_out_clock <= rcv_clock_out;
 	
-	OBUFDS_inst : OBUFDS
-		generic map (
-			IOSTANDARD => "LVCMOS33", -- Specify the output I/O standard
-			SLEW => "FAST")          -- Specify the output slew rate
-		port map (
-			O => diff_out_clock_p,     -- Diff_p output (connect directly to top-level port)
-			OB => diff_out_clock_n,   -- Diff_n output (connect directly to top-level port)
-			I => diff_out_clock      -- Buffer input 
-		);
+	usart_in_data_signal <=  diff_in_data when switchesRaw(13) = '0' else
+	                         usart_in_data;
 	
-	OBUFDS_inst2 : OBUFDS
-		generic map (
-			IOSTANDARD => "LVCMOS33", -- Specify the output I/O standard
-			SLEW => "FAST")          -- Specify the output slew rate
-		port map (
-			O => diff_out_data_p,     -- Diff_p output (connect directly to top-level port)
-			OB => diff_out_data_n,   -- Diff_n output (connect directly to top-level port)
-			I => diff_out_data      -- Buffer input
-		);
+	usart_in_clock_signal <=  diff_in_clock when switchesRaw(13) = '0' else
+                             usart_in_clock;
 		
+---------------LVDS WORKAROUND ---------------------------
+	diff_out_clock_p <= diff_out_clock;
+	diff_out_clock_n <= not diff_out_clock;
+	
+	diff_out_data_p <= diff_out_data;
+	diff_out_data_n <= not diff_out_data;
+
+---------------LVDS INPUTS -------------------------------		
 		
 	IBUFDS_inst : IBUFDS
-		generic map (
-			DIFF_TERM => TRUE, -- Differential Termination 
-			IBUF_LOW_PWR => FALSE, -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
-			IOSTANDARD => "LVCMOS33")
 		port map (
 			O => diff_in_clock,  -- Buffer output
 			I => diff_in_clock_p,  -- Diff_p buffer input (connect directly to top-level port)
@@ -121,10 +114,6 @@ begin
 		);
 	
 	IBUFDS_inst2 : IBUFDS
-		generic map (
-			DIFF_TERM => TRUE, -- Differential Termination 
-			IBUF_LOW_PWR => FALSE, -- Low power (TRUE) vs. performance (FALSE) setting for referenced I/O standards
-			IOSTANDARD => "LVCMOS33")
 		port map (
 			O => diff_in_data,  -- Buffer output
 			I => diff_in_data_p,  -- Diff_p buffer input (connect directly to top-level port)
@@ -221,8 +210,8 @@ begin
 			     clock_1kHz   => clock_1kHz,
 			     clock_10Hz   => clock_10Hz,
 			     clock_1Hz    => clock_1Hz,
-			     input_data  => usart_in_data,
-			     input_clock => usart_in_clock,
+			     input_data  => usart_in_data_signal,
+			     input_clock => usart_in_clock_signal,
 			     input3      => '0',
 			     debug   => receiver_out_debug);
 			     
