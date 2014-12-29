@@ -77,15 +77,12 @@ use std.textio.all;
 
 entity ErrorsCalc is
 	port (
-		displayPercent : out string(8 downto 1);
-		displayWanted : out string(8 downto 1);
-		displayGot : out string(8 downto 1);
-		displayDots : out std_logic_vector(8 downto 1);
+		displayPercent : out string(4 downto 1);
+		displayDots : out std_logic_vector(4 downto 1);
 		data : in std_logic_vector(7 downto 0);
 		data_latch : in std_logic;
 		data_transmissionError : in std_logic;
 		tick : in std_logic;
-		clock_100MHz : in std_logic; 
 		clock_1kHz : in std_logic
 	);
 end entity ErrorsCalc;
@@ -98,27 +95,23 @@ architecture RTL of ErrorsCalc is
 	signal expected_count : natural := 0;
 	signal expected_reset : std_logic;
 	
-	signal displayDotsSig : std_logic_vector(8 downto 1) := (others => '0');
-	
 	signal data_OK : std_logic;
 	
-	function int_to_string( input : integer ) return string is
-		variable str : string(7 downto 1);
+	function int_to_string( input : integer range 0 to 1001 ) return string is
+		variable str : string(4 downto 1);
+		variable inp : integer range 0 to 1001;
 	begin
-		str(1) := character'val(48 + (input mod 10));
-		str(2) := character'val(48 + ((input/10) mod 10));
-		str(3) := character'val(48 + ((input/100) mod 10));
-		str(4) := character'val(48 + ((input/1000) mod 10));
-		str(5) := character'val(48 + ((input/10000) mod 10));
-		str(6) := character'val(48 + ((input/100000) mod 10));
-		str(7) := character'val(48 + ((input/1000000) mod 10));
-		--str(8) := character'val(48 + ((input/10000000) mod 10));
+		inp := input;
+		for i in 1 to 4 loop
+			str(i) := character'val(48 + (inp mod 10));
+			inp := inp/10;
+		end loop;
 		return str; 
 	end int_to_string;
 	
 begin
 	
-	displayDots <= displayDotsSig;
+	displayDots <= "0010";
 	
 	
 	update_disp : process(clock_1kHz) is
@@ -132,18 +125,15 @@ begin
 			if( count >= 1000 ) then
 				count := 0;
 
-				received_reset <= '1';
-				expected_reset <= '1';
 				
 				res := received_count;
 				res := 1000*res;
 				res := res/expected_count;
 				
-				displayPercent <= "p" & int_to_string(res);
-				displayWanted <= "e" & int_to_string(expected_count);
-				displayGot <= "g" & int_to_string(received_count);
+				displayPercent <= int_to_string(res);
 				
-				displayDotsSig(1) <= not displayDotsSig(1);
+				received_reset <= '1';
+				expected_reset <= '1';
 			end if;
 		end if;
 	end process update_disp;
