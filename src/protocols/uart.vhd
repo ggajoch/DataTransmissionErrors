@@ -102,9 +102,9 @@ begin
 				when WaitForDataFlag =>
 					out_debug(1 downto 0) <= "11";
 					timeout_wait <= '0';					
---					if( DataFlag_sig = '1' ) then
---						State := Idle;
---					end if;
+					if( DataFlag_sig = '1' ) then
+						State := Idle;
+					end if;
 					if( timeout_occured = '1' ) then
 						State := Idle;
 					end if;
@@ -144,6 +144,7 @@ begin
 		if( reset_recv = '1' ) then
 			State := Receive;
 			BitsLeft := 9;
+			DataFlag_sig <= '0';
 		elsif( rising_edge(sampling_clock) ) then
 			case State is
 				when Idle =>
