@@ -146,13 +146,12 @@ entity displayController_RX is
 		protocol_sel_out : out integer range 0 to 99;
 		sci_controller_integer_out : out integer range 0 to 99;
 		sci_controller_exponent_out : out integer range 0 to 9;
-		digits : out std_logic_vector(7 downto 0);		
+		digits : out std_logic_vector(7 downto 0);
 		segments : out std_logic_vector(7 downto 0);
 		segment_mux_clock : in std_logic;
 
-		errorPercent : in string(8 downto 1);
-		errorRcvd : in string(8 downto 1);
-		errorWant : in string(8 downto 1)
+		errorPercent : in string(4 downto 1);
+		errorDots : in std_logic_vector(4 downto 1)
 	);
 end entity displayController_RX;
 
@@ -167,13 +166,6 @@ architecture RTL of displayController_RX is
 	signal protocol_dots : std_logic_vector(8 downto 1);
 	signal protocol_selected : integer range 0 to 99;
 	signal protocol_enable : std_logic;
-	
-	signal error_string : string(8 downto 1);
-	signal error_dots : std_logic_vector(8 downto 1);
-	signal error_data : std_logic_vector(7 downto 0);
-	signal error_dataLatch : std_logic;
-	signal error_enable : std_logic;
-	signal error_displayPercent : string(8 downto 1);
 	
 	signal actual_string : string(8 downto 1);
 	signal actual_dots : std_logic_vector(8 downto 1);
@@ -217,18 +209,6 @@ begin
 			     keyboard_clock => clock_keyboard,
 			     control_enable => protocol_enable);
 	
-	error_displayPercent <= errorPercent;
-	error_inst : entity work.ErrorsDisplay
-		port map(displayString  => error_string,
-			     displayDots    => error_dots,
-			     buttonLeft     => buttonLeft,
-			     buttonRight    => buttonRight,
-			     keyboard_clock => clock_keyboard,
-			     control_enable => error_enable,
-			     displayPercent => errorPercent,
-			     displayWanted  => errorWant,
-			     displayGot     => errorRcvd);
-			     
 	displayStateMaching : process(clock_keyboard) is
 		variable State : displayStates := Welcome;
 		variable StateAfterWait : displayStates;
@@ -243,7 +223,7 @@ begin
 				when Speed =>
 					sci_controller_enable <= '1';
 					actual_dots <= sci_controller_dots & "0010";
-					actual_string <= sci_controller_string & error_string(4 downto 1);
+					actual_string <= sci_controller_string & errorPercent;
 					if( middle_pressed ) then
 						sci_controller_enable <= '0';
 						State := WelcomeProtocol;
@@ -257,11 +237,9 @@ begin
 						State := WelcomeErrors;
 					end if;
 				when Errors =>
-					actual_string <= error_string;
-					actual_dots <= error_dots; 
-					error_enable <= '1';
+					actual_string <= "----" & errorPercent;
+					actual_dots <= "0000" & errorDots; 
 					if( middle_pressed ) then
-						error_enable <= '0';
 						State := WelcomeSpeed;
 					end if;
 				when WelcomeSpeed =>

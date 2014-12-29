@@ -47,13 +47,9 @@ architecture RTL of Rx_MAIN is
 	signal data_latch : std_logic;
 	
 	--------------- ERROR -------------------------------------
-	signal errorDots : std_logic_vector(8 downto 1);
-	signal errorPercent : string(8 downto 1);
+	signal errorDots : std_logic_vector(4 downto 1);
+	signal errorPercent : string(4 downto 1);
 	signal errorTrasmissionError : std_logic;
-	
-	signal displayPercent : string(8 downto 1);
-	signal displayWanted : string(8 downto 1);
-	signal displayGot : string(8 downto 1);
 		
 	--------------- UART --------------------------------------
 	
@@ -107,8 +103,7 @@ begin
 			     segments				 	 => segments,
 			     segment_mux_clock			 => clock_1kHz,
 			     errorPercent				 => errorPercent,
-				 errorRcvd 					 => displayGot,
-				 errorWant					 => displayWanted);
+			     errorDots					 => errorDots);
 
 	
 
@@ -160,14 +155,11 @@ begin
 	
 	err_calc : entity work.ErrorsCalc
 		port map(displayPercent => errorPercent,
-				 displayWanted  => displayWanted,
-				 displayGot     => displayGot,
 			     displayDots    => errorDots,
 			     data           => data_rcvd,
 			     data_latch     => data_latch,
 			     data_transmissionError		=> errorTrasmissionError,
 			     tick           => data_trigger,
-			     clock_100MHz   => clock_100MHz,
 			     clock_1kHz     => clock_1kHz);
 	
 	errorDetector : entity work.CodeCheck
