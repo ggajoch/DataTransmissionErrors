@@ -130,6 +130,9 @@ begin
 				res := 1000*res;
 				res := res/expected_count;
 				
+				if (res > 1000) then
+					res := 1000;
+				end if;
 				displayPercent <= int_to_string(res);
 				
 				received_reset <= '1';
