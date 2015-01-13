@@ -222,8 +222,8 @@ begin
 			case State is
 				when Speed =>
 					sci_controller_enable <= '1';
-					actual_dots <= sci_controller_dots & "0010";
-					actual_string <= sci_controller_string & errorPercent;
+					actual_dots <= "0010" & sci_controller_dots;
+					actual_string <= errorPercent & sci_controller_string;
 					if( middle_pressed ) then
 						sci_controller_enable <= '0';
 						State := WelcomeProtocol;
@@ -234,7 +234,7 @@ begin
 					protocol_enable <= '1';
 					if( middle_pressed ) then
 						protocol_enable <= '0';
-						State := WelcomeErrors;
+						State := WelcomeSpeed; --disable error screen
 					end if;
 				when Errors =>
 					actual_string <= "----" & errorPercent;
