@@ -91,10 +91,10 @@ begin
 	diff_out_clock <= rcv_clock_out;
 	usart_out_clock <= rcv_clock_out;
 	
-	usart_in_data_signal <=  diff_in_data when switchesRaw(13) = '0' else
+	usart_in_data_signal <=  diff_in_data when switchesRaw(13) = '1' else
 	                         usart_in_data;
 	
-	usart_in_clock_signal <=  diff_in_clock when switchesRaw(13) = '0' else
+	usart_in_clock_signal <=  diff_in_clock when switchesRaw(13) = '1' else
                              usart_in_clock;
 		
 ---------------LVDS WORKAROUND ---------------------------
@@ -122,7 +122,7 @@ begin
 	
 	control_pin <= switchesRaw(15);
 	
-	LED(14 downto 8) <= receiver_out_debug(6 downto 0);
+	LED(14 downto 8) <= (others => '0'); --receiver_out_debug(6 downto 0);
 	
 	JC(8 downto 1) <= receiver_out_debug(7 downto 0);
 	LED(7 downto 0) <= IO_RX.LED(7 downto 0);
