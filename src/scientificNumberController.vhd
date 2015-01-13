@@ -88,7 +88,7 @@ begin
 					if( last_Down = '0' and buttonDown = '1') then
 						if( (changing_nr = 4 and character'pos(digits_string(changing_nr)) > character'pos('1')) or
 							(changing_nr = 3 and character'pos(digits_string(changing_nr)) > character'pos('0')) or
-							(changing_nr = 1 and character'pos(digits_string(changing_nr)) > character'pos('2'))
+							(changing_nr = 1 and character'pos(digits_string(changing_nr)) > character'pos('0'))
 						) then
 							if ( changing_nr = 1 ) then
 								buf_integer_exponent <= buf_integer_exponent - 1;
