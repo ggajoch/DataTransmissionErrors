@@ -62,7 +62,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports clock_100MHz]
 
 
 set_property IOSTANDARD LVCMOS33 [get_ports out_clock]
-set_property PACKAGE_PIN B13 [get_ports out_clock]
 
 
 set_property IOSTANDARD LVCMOS33 [get_ports {switchesRaw[7]}]
@@ -98,7 +97,6 @@ set_property PACKAGE_PIN F15 [get_ports buttonUpRaw]
 
 
 set_property IOSTANDARD LVCMOS33 [get_ports uart_out]
-set_property PACKAGE_PIN F14 [get_ports uart_out]
 
 set_property IOSTANDARD LVCMOS33 [get_ports {LED[15]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {LED[14]}]
@@ -137,9 +135,9 @@ set_property IOSTANDARD LVCMOS33 [get_ports usart_in_clock]
 set_property IOSTANDARD LVCMOS33 [get_ports usart_in_data]
 set_property IOSTANDARD LVCMOS33 [get_ports usart_out_clock]
 set_property IOSTANDARD LVCMOS33 [get_ports usart_out_data]
-set_property PACKAGE_PIN E17 [get_ports usart_in_data]
-set_property PACKAGE_PIN G13 [get_ports usart_out_clock]
-set_property PACKAGE_PIN C17 [get_ports usart_out_data]
+set_property PACKAGE_PIN G14 [get_ports usart_in_data]
+set_property PACKAGE_PIN F14 [get_ports usart_out_clock]
+set_property PACKAGE_PIN B13 [get_ports usart_out_data]
 
 set_property PACKAGE_PIN P15 [get_ports usart_in_clock]
 
@@ -181,3 +179,4 @@ set_property PACKAGE_PIN A14 [get_ports diff_out_data_n]
 set_property PACKAGE_PIN A15 [get_ports diff_out_clock_p]
 set_property PACKAGE_PIN A16 [get_ports diff_out_clock_n]
 set_property PACKAGE_PIN B18 [get_ports diff_in_clock_p]
+
