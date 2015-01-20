@@ -225,7 +225,7 @@ architecture RTL of displayController_RX is
 	signal actual_string : string(8 downto 1);
 	signal actual_dots : std_logic_vector(8 downto 1);
 
-	type displayStates is (Speed, Protocol, Errors, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, WelcomeErrors, Welcome, WelcomeLVDS, LVDS);
+	type displayStates is (Speed, Protocol, Errors, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, WelcomeErrors, Welcome, LVDS);
 	
 begin
 	
@@ -296,7 +296,7 @@ begin
 					protocol_enable <= '1';
 					if( middle_pressed ) then
 						protocol_enable <= '0';
-						State := WelcomeLVDS; --disable error screen
+						State := LVDS; --disable error screen
 					end if;
 				when Errors =>
 					actual_string <= "----" & errorPercent;
@@ -329,10 +329,6 @@ begin
 					else
 						State := StateAfterWait;
 					end if;
-				when WelcomeLVDS =>
-					actual_string <= "----lvds";
-					StateAfterWait := LVDS;
-					State := Wait1sec;
 				when LVDS =>
 					if ( right_pressed or left_pressed ) then
 						if( LVDS_On = '1' ) then
@@ -343,9 +339,9 @@ begin
 					end if;
 					
 					if ( LVDS_On = '1' ) then
-						actual_string <= "-----on-";
+						actual_string <= "lvds-on-";
 					else 
-						actual_string <= "-----off";
+						actual_string <= "lvds-off";
 					end if;
 					
 					actual_dots <= "00000000";
