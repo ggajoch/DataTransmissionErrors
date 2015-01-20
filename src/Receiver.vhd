@@ -24,7 +24,9 @@ entity Rx_MAIN is
 		input_clock : in std_logic;
 		input3 : in std_logic;
 		
-		debug : out std_logic_vector(7 downto 0)
+		debug : out std_logic_vector(7 downto 0);
+		
+		LVDS_On : out std_logic
 	);
 end entity Rx_MAIN;
 
@@ -40,6 +42,8 @@ architecture RTL of Rx_MAIN is
 	signal protocol_sel : integer range 0 to 99;
 	signal speed_integer : integer range 0 to 99;
 	signal speed_exponent : integer range 0 to 9;
+	
+	signal LVDS_Rx_On : std_logic;
 	
 	--------------- COMMON ------------------------------------
 	signal data_out : std_logic_vector(7 downto 0);
@@ -86,6 +90,8 @@ architecture RTL of Rx_MAIN is
 	
 begin
 	
+	LVDS_On <= LVDS_Rx_On;
+	
 	--------------- DISPLAY CONTROL ---------------------------
 	
 	display_inst : entity work.displayController_RX
@@ -103,7 +109,8 @@ begin
 			     segments				 	 => segments,
 			     segment_mux_clock			 => clock_1kHz,
 			     errorPercent				 => errorPercent,
-			     errorDots					 => errorDots);
+			     errorDots					 => errorDots,
+			     LVDS_Rx_On				     => LVDS_Rx_On);
 
 	
 

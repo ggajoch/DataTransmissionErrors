@@ -40,10 +40,13 @@ entity main is
 		JC : out std_logic_vector(8 downto 1)
 	);
 end entity main;
-	
+
 architecture RTL of main is
 	signal rcv_data_out : std_logic;
 	signal rcv_clock_out : std_logic;
+	
+	signal LVDS_Tx_On : std_logic;
+	signal LVDS_Rx_On : std_logic;
 	
 	signal diff_out_clock : std_logic;
 	signal diff_out_data : std_logic;
@@ -84,25 +87,26 @@ architecture RTL of main is
 	signal IO_RX : IO_to_device_t;
 	
 	signal control_pin : std_logic;
+	
 begin
 	
 	diff_out_data <= rcv_data_out;
-	usart_out_data <= rcv_data_out;
+	usart_out_data <= rcv_data_out when LVDS_Tx_On = '0' else '1';
 	diff_out_clock <= rcv_clock_out;
-	usart_out_clock <= rcv_clock_out;
+	usart_out_clock <= rcv_clock_out when LVDS_Tx_On = '0' else '1';
 	
-	usart_in_data_signal <=  diff_in_data when switchesRaw(13) = '1' else
+	usart_in_data_signal <=  diff_in_data when LVDS_Rx_On = '1' else
 	                         usart_in_data;
 	
-	usart_in_clock_signal <=  diff_in_clock when switchesRaw(13) = '1' else
+	usart_in_clock_signal <=  diff_in_clock when LVDS_Rx_On = '1' else
                              usart_in_clock;
 		
 ---------------LVDS WORKAROUND ---------------------------
-	diff_out_clock_p <= diff_out_clock;
-	diff_out_clock_n <= not diff_out_clock;
+	diff_out_clock_p <= diff_out_clock when LVDS_Tx_On = '1' else '1';
+	diff_out_clock_n <= not diff_out_clock when LVDS_Tx_On = '1' else '0';
 	
-	diff_out_data_p <= diff_out_data;
-	diff_out_data_n <= not diff_out_data;
+	diff_out_data_p <= diff_out_data when LVDS_Tx_On = '1' else '1';
+	diff_out_data_n <= not diff_out_data when LVDS_Tx_On = '1' else '0';
 
 ---------------LVDS INPUTS -------------------------------		
 		
@@ -191,7 +195,8 @@ begin
 			     clock_1Hz    => clock_1Hz,
 			     output_data  => rcv_data_out,
 			     output_clock => rcv_clock_out,
-			     output3      => out_clock);
+			     output3      => out_clock,
+			     LVDS_On	  => LVDS_Tx_On);
 	
 --------------- RECEIVER --------------------------------------
 	
@@ -213,7 +218,8 @@ begin
 			     input_data  => usart_in_data_signal,
 			     input_clock => usart_in_clock_signal,
 			     input3      => '0',
-			     debug   => receiver_out_debug);
+			     debug   => receiver_out_debug,
+			     LVDS_On	  => LVDS_Rx_On);
 			     
 			     
 --------------- DEBOUNCING ------------------------------------

@@ -15,7 +15,8 @@ entity displayController_TX is
 		sci_controller_exponent_out : out integer range 0 to 9;
 		digits : out std_logic_vector(7 downto 0);		
 		segments : out std_logic_vector(7 downto 0);
-		segment_mux_clock : in std_logic
+		segment_mux_clock : in std_logic;
+		LVDS_Tx_On : out std_logic
 	);
 end entity displayController_TX;
 
@@ -34,7 +35,7 @@ architecture RTL of displayController_TX is
 	signal actual_string : string(8 downto 1);
 	signal actual_dots : std_logic_vector(8 downto 1);
 
-	type displayStates is (Speed, Protocol, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, Welcome);
+	type displayStates is (Speed, Protocol, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, Welcome, WelcomeLVDS, LVDS);
 begin
 	
 	segControl : entity work.SevenSegControl
@@ -78,10 +79,17 @@ begin
 		variable StateAfterWait : displayStates;
 		variable ticks_left : integer := 0;
 		variable last_change_button : std_logic := '1';
+		variable last_change_button_right : std_logic := '1';
+		variable last_change_button_left : std_logic := '1';
 		variable middle_pressed : boolean := FALSE;
+		variable right_pressed : boolean := FALSE;
+		variable left_pressed : boolean := FALSE;
+		variable LVDS_On : std_logic := '0';
 	begin
 		if( rising_edge(clock_keyboard) ) then
 			middle_pressed := ( last_change_button = '0' and buttonMiddle = '1' );
+			right_pressed := ( last_change_button_right = '0' and buttonRight = '1' );
+			left_pressed := ( last_change_button_left = '0' and buttonLeft = '1' );
 			actual_dots <= (others => '0'); 
 			case State is
 				when Speed =>
@@ -98,7 +106,7 @@ begin
 					protocol_enable <= '1';
 					if( middle_pressed ) then
 						protocol_enable <= '0';
-						State := WelcomeSpeed;
+						State := WelcomeLVDS;
 					end if;
 				when WelcomeSpeed =>
 					actual_string <= "-speed--";
@@ -121,8 +129,35 @@ begin
 					else
 						State := StateAfterWait;
 					end if;
+				when WelcomeLVDS =>
+					actual_string <= "----lvds";
+					StateAfterWait := LVDS;
+					State := Wait1sec;
+				when LVDS =>
+					if ( right_pressed or left_pressed ) then
+						if( LVDS_On = '1' ) then
+							LVDS_On := '0';
+						else
+							LVDS_On := '1';
+						end if;
+					end if;
+					
+					if ( LVDS_On = '1' ) then
+						actual_string <= "-----on-";
+					else 
+						actual_string <= "-----off";
+					end if;
+					
+					actual_dots <= "00000000";
+					if( middle_pressed ) then
+						protocol_enable <= '0';
+						State := WelcomeSpeed;
+					end if;
 			end case;
 			last_change_button := buttonMiddle;
+			last_change_button_right := buttonRight;
+			last_change_button_left := buttonLeft;
+			LVDS_Tx_On <= LVDS_On;
 		end if;
 	end process displayStateMaching;
 end architecture RTL;
@@ -151,7 +186,8 @@ entity displayController_RX is
 		segment_mux_clock : in std_logic;
 
 		errorPercent : in string(4 downto 1);
-		errorDots : in std_logic_vector(4 downto 1)
+		errorDots : in std_logic_vector(4 downto 1);
+		LVDS_Rx_On : out std_logic
 	);
 end entity displayController_RX;
 
@@ -170,7 +206,7 @@ architecture RTL of displayController_RX is
 	signal actual_string : string(8 downto 1);
 	signal actual_dots : std_logic_vector(8 downto 1);
 
-	type displayStates is (Speed, Protocol, Errors, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, WelcomeErrors, Welcome);
+	type displayStates is (Speed, Protocol, Errors, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, WelcomeErrors, Welcome, WelcomeLVDS, LVDS);
 	
 begin
 	
@@ -214,10 +250,17 @@ begin
 		variable StateAfterWait : displayStates;
 		variable ticks_left : integer := 0;
 		variable last_change_button : std_logic := '1';
+		variable last_change_button_right : std_logic := '1';
+		variable last_change_button_left : std_logic := '1';
 		variable middle_pressed : boolean := FALSE;
+		variable right_pressed : boolean := FALSE;
+		variable left_pressed : boolean := FALSE;
+		variable LVDS_On : std_logic := '0';
 	begin
 		if( rising_edge(clock_keyboard) ) then
 			middle_pressed := ( last_change_button = '0' and buttonMiddle = '1' );
+			right_pressed := ( last_change_button_right = '0' and buttonRight = '1' );
+			left_pressed := ( last_change_button_left = '0' and buttonLeft = '1' );
 			actual_dots <= (others => '0'); 
 			case State is
 				when Speed =>
@@ -234,7 +277,7 @@ begin
 					protocol_enable <= '1';
 					if( middle_pressed ) then
 						protocol_enable <= '0';
-						State := WelcomeSpeed; --disable error screen
+						State := WelcomeLVDS; --disable error screen
 					end if;
 				when Errors =>
 					actual_string <= "----" & errorPercent;
@@ -267,8 +310,35 @@ begin
 					else
 						State := StateAfterWait;
 					end if;
+				when WelcomeLVDS =>
+					actual_string <= "----lvds";
+					StateAfterWait := LVDS;
+					State := Wait1sec;
+				when LVDS =>
+					if ( right_pressed or left_pressed ) then
+						if( LVDS_On = '1' ) then
+							LVDS_On := '0';
+						else
+							LVDS_On := '1';
+						end if;
+					end if;
+					
+					if ( LVDS_On = '1' ) then
+						actual_string <= "-----on-";
+					else 
+						actual_string <= "-----off";
+					end if;
+					
+					actual_dots <= "00000000";
+					if( middle_pressed ) then
+						protocol_enable <= '0';
+						State := WelcomeSpeed;
+					end if;
 			end case;
 			last_change_button := buttonMiddle;
+			last_change_button_right := buttonRight;
+			last_change_button_left := buttonLeft;
+			LVDS_Rx_On <= LVDS_On;
 		end if;
 	end process displayStateMaching;
 end architecture RTL;

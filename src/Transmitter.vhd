@@ -26,7 +26,9 @@ entity Tx_MAIN is
 		
 		output_data : out std_logic;
 		output_clock : out std_logic;
-		output3 : out std_logic
+		output3 : out std_logic;
+		
+		LVDS_On : out std_logic
 	);
 end entity Tx_MAIN;
 
@@ -42,6 +44,7 @@ architecture RTL of Tx_MAIN is
 	signal protocol_sel : integer range 0 to 99;
 	signal speed_integer : integer range 0 to 99;
 	signal speed_exponent : integer range 0 to 9;
+	signal LVDS_Tx_On : std_logic;
 	
 	--------------- COMMON ------------------------------------
 	signal data_out : std_logic_vector(7 downto 0);
@@ -62,6 +65,7 @@ architecture RTL of Tx_MAIN is
 
 begin
 	
+	LVDS_On <= LVDS_Tx_On;
 	--------------- DISPLAY CONTROL ---------------------------
 	
 	display_inst : entity work.displayController_TX
@@ -77,7 +81,8 @@ begin
 			     sci_controller_exponent_out => speed_exponent,
 			     digits 			 		 => digits,
 			     segments				 	 => segments,
-			     segment_mux_clock			 => clock_1kHz);
+			     segment_mux_clock			 => clock_1kHz,
+			     LVDS_Tx_On				     => LVDS_Tx_On);
 
 	
 
