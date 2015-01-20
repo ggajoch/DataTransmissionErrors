@@ -16,7 +16,8 @@ entity displayController_TX is
 		digits : out std_logic_vector(7 downto 0);		
 		segments : out std_logic_vector(7 downto 0);
 		segment_mux_clock : in std_logic;
-		LVDS_Tx_On : out std_logic
+		LVDS_Tx_On : out std_logic;
+		Generator_On : out std_logic
 	);
 end entity displayController_TX;
 
@@ -35,7 +36,7 @@ architecture RTL of displayController_TX is
 	signal actual_string : string(8 downto 1);
 	signal actual_dots : std_logic_vector(8 downto 1);
 
-	type displayStates is (Speed, Protocol, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, Welcome, WelcomeLVDS, LVDS);
+	type displayStates is (Speed, Protocol, WaitTicks, Wait1sec, WelcomeSpeed, WelcomeProtocol, Welcome, LVDS, GEN);
 begin
 	
 	segControl : entity work.SevenSegControl
@@ -85,6 +86,7 @@ begin
 		variable right_pressed : boolean := FALSE;
 		variable left_pressed : boolean := FALSE;
 		variable LVDS_On : std_logic := '0';
+		variable GEN_On : std_logic := '0';
 	begin
 		if( rising_edge(clock_keyboard) ) then
 			middle_pressed := ( last_change_button = '0' and buttonMiddle = '1' );
@@ -106,7 +108,7 @@ begin
 					protocol_enable <= '1';
 					if( middle_pressed ) then
 						protocol_enable <= '0';
-						State := WelcomeLVDS;
+						State := LVDS;
 					end if;
 				when WelcomeSpeed =>
 					actual_string <= "-speed--";
@@ -129,10 +131,6 @@ begin
 					else
 						State := StateAfterWait;
 					end if;
-				when WelcomeLVDS =>
-					actual_string <= "----lvds";
-					StateAfterWait := LVDS;
-					State := Wait1sec;
 				when LVDS =>
 					if ( right_pressed or left_pressed ) then
 						if( LVDS_On = '1' ) then
@@ -143,9 +141,29 @@ begin
 					end if;
 					
 					if ( LVDS_On = '1' ) then
-						actual_string <= "-----on-";
+						actual_string <= "lvds-on-";
 					else 
-						actual_string <= "-----off";
+						actual_string <= "lvds-off";
+					end if;
+					
+					actual_dots <= "00000000";
+					if( middle_pressed ) then
+						protocol_enable <= '0';
+						State := GEN;
+					end if;
+				when GEN =>
+					if ( right_pressed or left_pressed ) then
+						if( GEN_On = '1' ) then
+							GEN_On := '0';
+						else
+							GEN_On := '1';
+						end if;
+					end if;
+					
+					if ( GEN_On = '1' ) then
+						actual_string <= "gen--on-";
+					else 
+						actual_string <= "gen--off";
 					end if;
 					
 					actual_dots <= "00000000";
@@ -158,6 +176,7 @@ begin
 			last_change_button_right := buttonRight;
 			last_change_button_left := buttonLeft;
 			LVDS_Tx_On <= LVDS_On;
+			Generator_On <= GEN_On;
 		end if;
 	end process displayStateMaching;
 end architecture RTL;

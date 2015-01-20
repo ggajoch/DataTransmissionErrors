@@ -45,6 +45,7 @@ architecture RTL of Tx_MAIN is
 	signal speed_integer : integer range 0 to 99;
 	signal speed_exponent : integer range 0 to 9;
 	signal LVDS_Tx_On : std_logic;
+	signal Generator_On : std_logic;
 	
 	--------------- COMMON ------------------------------------
 	signal data_out : std_logic_vector(7 downto 0);
@@ -82,7 +83,8 @@ begin
 			     digits 			 		 => digits,
 			     segments				 	 => segments,
 			     segment_mux_clock			 => clock_1kHz,
-			     LVDS_Tx_On				     => LVDS_Tx_On);
+			     LVDS_Tx_On				     => LVDS_Tx_On,
+			     Generator_On				 => Generator_On);
 
 	
 
@@ -109,7 +111,7 @@ begin
 		port map(clk    => clock_10Hz,
 			     packet => data_generator_out);
 	
-	data_out <= switchesRaw(7 downto 0) when switchesRaw(14) = '0' else
+	data_out <= switchesRaw(7 downto 0) when Generator_On = '0' else --switchesRaw(14) = '0' else
 				data_generator_out;
 			
 	
