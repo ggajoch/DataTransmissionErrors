@@ -18,13 +18,13 @@ end entity protocolChooser;
 
 
 architecture RTL of protocolChooser is
-	type modesArray_t is array(0 to nr_of_modes-1) of string(8 downto 2);
-	signal modesArray : modesArray_t := ("--uart-", "-usart-");
+	type modesArray_t is array(0 to nr_of_modes-1) of string(8 downto 1);
+	signal modesArray : modesArray_t := ("--uart--", "--usart-");
 	
 	signal modeIter : integer range 0 to nr_of_modes-1 := 0;
 begin 
 	displayDots <= (others => '0');
-	displayString <= modesArray(modeIter) & character'val(48+modeIter);
+	displayString <= modesArray(modeIter);-- & character'val(48+modeIter);
 	modeOut <= modeIter;
 	
 	process(keyboard_clock) is
