@@ -97,9 +97,9 @@ architecture RTL of ErrorsCalc is
 	
 	signal data_OK : std_logic;
 	
-	function int_to_string( input : integer range 0 to 1001 ) return string is
+	function int_to_string( input : integer range 0 to 5001 ) return string is
 		variable str : string(4 downto 1);
-		variable inp : integer range 0 to 1001;
+		variable inp : integer range 0 to 5001;
 	begin
 		inp := input;
 		for i in 1 to 4 loop
@@ -126,14 +126,12 @@ begin
 				count := 0;
 
 				
-				res := received_count;
-				res := 1000*res;
-				res := res/expected_count;
-				
-				if (res > 1000) then
-					res := 1000;
+				if( received_count >= expected_count ) then
+					displayPercent <= "1000";
+				else
+					res := 1000*received_count/expected_count;
+					displayPercent <= int_to_string(res);
 				end if;
-				displayPercent <= int_to_string(res);
 				
 				received_reset <= '1';
 				expected_reset <= '1';
