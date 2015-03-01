@@ -18,6 +18,9 @@ Error is big especialy in high frequencies (10Mbps+), due to limited capabilitie
 
 LUT was calculated using Matlab script (in script folder) - it calculates which waveform to choose and divisor to have the closest match to input.
 
-[logo]: https://github.com/rexina/DataTransmissionErrors/tree/master/docs/img/OutFreqVsInput.png "Frequency output vs requested"
+Frequency output vs requested:
+![Frequency output vs requested](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Frequency output vs requested")
 
-[logo]: https://github.com/rexina/DataTransmissionErrors/tree/master/docs/img/FreqError.png "Frequency error in %"
+Frequency error in %:
+![Frequency error in %](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Frequency error in %")
+
