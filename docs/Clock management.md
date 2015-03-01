@@ -11,6 +11,9 @@ Output is not guaranteed to be equal to selected, but it will be close.
 Error is big especialy in high frequencies (10Mbps+), due to limited capabilities of PLL's on FPGA.
 
 ## Internal operation
+Digram:
+![Diagram](https://github.com/rexina/DataTransmissionErrors/blob/master/docs/img/ClockDiagram.png "Diagram")
+
 * external clock frequency is changed using 3 PLL's inside FPGA - each one with 8 different waves,
 * using LUT's and multiplexers the correct waveform is selected,
 * frequency is divided by integer (taken also from LUT) using counter,
@@ -25,4 +28,3 @@ Frequency output vs requested:
 Frequency error in %:
 
 ![Frequency error in %](https://github.com/rexina/DataTransmissionErrors/blob/master/docs/img/FreqError.png "Frequency error in %")
-
